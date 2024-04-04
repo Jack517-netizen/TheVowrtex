@@ -3,20 +3,32 @@ import '@babylonjs/inspector'
 import {
   Engine,
   Scene,
-  ArcRotateCamera,
   Vector3,
   Mesh,
   MeshBuilder,
   HemisphericLight,
   Color4,
-  FreeCamera
+  FreeCamera,
+  Matrix,
+  PointLight,
+  Color3,
+  ShadowGenerator,
 } from '@babylonjs/core'
 import { AdvancedDynamicTexture, Button, Control } from '@babylonjs/gui'
+import { Environment } from './environment'
+import { Player } from './playerController'
+import { configs } from '../configs/constants'
+import { PlayerInput } from './inputController'
 
 // STATES for Game
-enum State { START = 0, GAME = 1, LOSE = 2, CUTSCENE = 3}
+enum State {
+  START = 0,
+  GAME = 1,
+  LOSE = 2,
+  CUTSCENE = 3,
+}
 
-class App {
+export class App {
   // General Entire Application
   private _scene: Scene
   private _canvas: HTMLCanvasElement
@@ -26,6 +38,12 @@ class App {
   private _state: number = 0
   private _cutScene: Scene
   private _gamescene: Scene
+
+  // Game State Related
+  public assets
+  private _environment
+  private _player: Player
+  private _input: PlayerInput
 
   constructor() {
     this._canvas = this._createCanvas()
@@ -57,18 +75,19 @@ class App {
     this._engine.runRenderLoop(() => {
       switch (this._state) {
         case State.START:
-            this._scene.render()
-            break
+          this._scene.render()
+          break
         case State.CUTSCENE:
-            this._scene.render()
-            break
+          this._scene.render()
+          break
         case State.GAME:
-            this._scene.render()
-            break
+          this._scene.render()
+          break
         case State.LOSE:
-            this._scene.render()
-            break
-        default: break
+          this._scene.render()
+          break
+        default:
+          break
       }
     })
 
@@ -77,9 +96,8 @@ class App {
     })
   }
 
-  ///* SET UP CANVAS 
+  ///* SET UP CANVAS
   private _createCanvas(): HTMLCanvasElement {
-
     // create the canvas html element and attach it to the webpage
     this._canvas = document.createElement('canvas')
     this._canvas.style.width = '100%'
@@ -99,20 +117,20 @@ class App {
     // don't detect any inputs from this ui while the game is loading
     this._scene.detachControl()
     let scene = new Scene(this._engine)
-    scene.clearColor = new Color4(0, 0, 0, 1)
-    let camera = new FreeCamera("camera1", Vector3.Zero(), scene)
+    scene.clearColor = Color4.FromHexString(configs.clear)
+    let camera = new FreeCamera('camera#01', Vector3.Zero(), scene)
     camera.setTarget(Vector3.Zero())
 
     //TODO: ...do gui related stuff
     // create a fullscreen ui for all of our GUI elements
-    const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI("ui")
+    const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI('GUI')
     guiMenu.idealHeight = 720 // fit our fullscreen ui to this height
 
-    const startBtn = Button.CreateSimpleButton("start", "START")
+    const startBtn = Button.CreateSimpleButton('start', 'START')
     startBtn.width = 0.2
-    startBtn.height = "40px"
-    startBtn.color = "white"
-    startBtn.top = "-14px"
+    startBtn.height = '40px'
+    startBtn.color = 'white'
+    startBtn.top = '-14px'
     startBtn.thickness = 0
     startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
     guiMenu.addControl(startBtn)
@@ -121,7 +139,7 @@ class App {
     startBtn.onPointerDownObservable.add(() => {
       this._goToCutScene()
       scene.detachControl() //observables disabled
-    });
+    })
 
     // --SCENE FINISHED LOADING--
     await scene.whenReadyAsync()
@@ -132,28 +150,28 @@ class App {
     this._state = State.START
   }
 
-  ///* 
-  private async _goToLose() : Promise<void> {
+  ///*
+  private async _goToLose(): Promise<void> {
     this._engine.displayLoadingUI()
 
     // --SCENE SETUP--
     this._scene.detachControl()
     let scene = new Scene(this._engine)
-    scene.clearColor = new Color4(0, 0, 0, 1)
-    let camera = new FreeCamera("camera1", new Vector3(0, 0, 0), scene)
+    scene.clearColor = Color4.FromHexString(configs.clear)
+    let camera = new FreeCamera('camera#01', new Vector3(0, 0, 0), scene)
     camera.setTarget(Vector3.Zero())
 
     // --GUI--
-    const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI("UI")
-    const mainBtn = Button.CreateSimpleButton("mainmenu", "MAIN MENU")
+    const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI('GUI')
+    const mainBtn = Button.CreateSimpleButton('mainmenu', 'MAIN MENU')
     mainBtn.width = 0.2
-    mainBtn.height = "40px"
-    mainBtn.color = "white"
+    mainBtn.height = '40px'
+    mainBtn.color = 'white'
     guiMenu.addControl(mainBtn)
     // this handles interactions with the start button attached to the scene
     mainBtn.onPointerUpObservable.add(() => {
-        this._goToStart()
-    });
+      this._goToStart()
+    })
 
     // --SCENE FINISHED LOADING--
     await scene.whenReadyAsync()
@@ -165,32 +183,52 @@ class App {
   }
 
   ///* SETUP CUTSCENE
-  private async _goToCutScene(): Promise<void>{
+  private async _goToCutScene(): Promise<void> {
     this._engine.displayLoadingUI()
 
     // --SETUP SCENE--
     // dont detect any inputs from this ui while the game is loading
     this._scene.detachControl()
     this._cutScene = new Scene(this._engine)
-    let camera = new FreeCamera("camera1", new Vector3(0, 0, 0), this._cutScene)
+    let camera = new FreeCamera(
+      'camera#01',
+      new Vector3(0, 0, 0),
+      this._cutScene,
+    )
     camera.setTarget(Vector3.Zero())
-    this._cutScene.clearColor = new Color4(0, 0, 0, 1)
+    this._cutScene.clearColor = Color4.FromHexString(configs.clear)
 
     // --GUI--
-    const cutScene = AdvancedDynamicTexture.CreateFullscreenUI("cutscene")
-  
+    const cutScene = AdvancedDynamicTexture.CreateFullscreenUI('CUTSCENE')
+
+    //--PROGRESS DIALOGUE--
+    const next = Button.CreateSimpleButton('next', 'NEXT')
+    next.color = 'white'
+    next.thickness = 0
+    next.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
+    next.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
+    next.width = '64px'
+    next.height = '64px'
+    next.top = '-3%'
+    next.left = '-12%'
+    cutScene.addControl(next)
+
     // --WHEN SCENE IS FINISHED LOADING--
     await this._cutScene.whenReadyAsync()
+    this._engine.hideLoadingUI()
     this._scene.dispose()
     this._state = State.CUTSCENE
     this._scene = this._cutScene
 
+    next.onPointerUpObservable.add(() => {
+      this._goToGame()
+    })
+
     // --START LOADING AND SETTING UP THE GAME DURING THIS SCENE--
-    var finishedLoading = false
-    await this._setUpGame().then(_res =>{
-        finishedLoading = true
-        this._goToGame()
-    });
+    let finishedLoading = false
+    await this._setUpGame().then((_res) => {
+      finishedLoading = true
+    })
   }
 
   ///* SETUP ENTIRE GAME
@@ -198,55 +236,103 @@ class App {
     // --CREATE SCENE--
     let scene = new Scene(this._engine)
     this._gamescene = scene
-  
-    //TODO: ...load assets
+
+    // --CREATE ENVIRONMENT--
+    const environment = new Environment(scene)
+    this._environment = environment
+    await this._environment.load()
+
+    // ..loaded environment
+    await this._loadGameAssets(scene) // player car
+  }
+
+  private async _loadGameAssets(scene: Scene) {
+    async function loadCharacter() {
+      //TODO: Think about built-in mesh
+      // collision mesh
+      const outer = MeshBuilder.CreateBox(
+        'outer',
+        { width: 1, height: 1, depth: 3 },
+        scene,
+      )
+
+      outer.position.y = 0.5
+      outer.isVisible = true
+      outer.isPickable = false
+      outer.checkCollisions = true
+
+      return {
+        mesh: outer as Mesh,
+      }
+    }
+
+    return loadCharacter().then((assets) => {
+      this.assets = assets
+    })
+  }
+
+  ///* Initialize the game
+  private async _initializeGameAsync(scene): Promise<void> {
+    // temporary light to light the entire scene
+    let light0 = new HemisphericLight('HemiLight', new Vector3(0, 1, 0), scene)
+
+    const light = new PointLight('sparklight', new Vector3(0, 0, 0), scene)
+    light.diffuse = new Color3(
+      0.08627450980392157,
+      0.10980392156862745,
+      0.15294117647058825,
+    )
+    light.intensity = 35
+    light.radius = 1
+
+    const shadowGenerator = new ShadowGenerator(1024, light)
+    shadowGenerator.darkness = 0.4
+
+    // --INPUT--
+    this._input = new PlayerInput(scene) // detect keyboard/mobile inputs
+
+    this._player = new Player(this.assets, scene, shadowGenerator, this._input) // dont have inputs yet so we dont need to pass it in
   }
 
   ///* SETUP GAME SCENE
-  private _goToGame() {
+  private async _goToGame() {
     // --SETUP SCENE--
     this._scene.detachControl()
     let scene = this._gamescene
-    
+
     // a color that fit the overall color scheme better
-    scene.clearColor = new Color4(0.01568627450980392, 0.01568627450980392, 0.20392156862745098) 
-    let camera: ArcRotateCamera = new ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene)
-    camera.setTarget(Vector3.Zero())
+    scene.clearColor = Color4.FromHexString(configs.primary)
 
     // --GUI--
-    const playerUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    // dont detect any inputs from this ui while the game is loading
+    const playerUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     scene.detachControl()
 
-    const loseBtn = Button.CreateSimpleButton("lose", "LOSE")
+    const loseBtn = Button.CreateSimpleButton('lose', 'LOSE')
     loseBtn.width = 0.2
-    loseBtn.height = "40px"
-    loseBtn.color = "white"
-    loseBtn.top = "-14px"
+    loseBtn.height = '40px'
+    loseBtn.color = 'white'
+    loseBtn.top = '-14px'
     loseBtn.thickness = 0
     loseBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
     playerUI.addControl(loseBtn)
 
-    // this handles interactions with the start button attached to the scene
+    // this handles interactions with the lose button attached to the scene
     loseBtn.onPointerDownObservable.add(() => {
       this._goToLose()
       scene.detachControl() //observables disabled
     })
 
-    // temporary scene objects
-    var light1: HemisphericLight = new HemisphericLight("light1", new Vector3(1, 1, 0), scene)
-    var ground: Mesh = MeshBuilder.CreateGround("ground", { width: 100 }, scene)
+    // primitive character and setting
+    await this._initializeGameAsync(scene)
 
+    await scene.whenReadyAsync()
     // get rid of start scene, switch to gamescene and change states
     this._scene.dispose()
     this._state = State.GAME
     this._scene = scene
     this._engine.hideLoadingUI()
-    
+
     // the game is ready, attach control back
-    this._scene.attachControl();
+    this._scene.attachControl()
   }
-
 }
-
-export default App
