@@ -146,13 +146,16 @@ function buildUserBtn() {
     let youBtn = GameButton.createHeaderButton('youButton', 'YOU')
     youBtn.onPointerClickObservable.add(() => {
       //TODO: Show user profile details in POPUP
+      buildUserBtn()
     })
     return youBtn
   } else {
     let loginBtn = GameButton.createHeaderButton('loginButton', 'LOGIN')
     loginBtn.onPointerClickObservable.add(() => {
       FirebaseOAuth.login()
+      buildUserBtn()
     })
+    
     return loginBtn
   }
 }

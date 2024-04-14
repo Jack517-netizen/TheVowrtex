@@ -17,10 +17,7 @@ export class FirebaseOAuth {
             
             // The signed-in user info.
             const user = result.user
-            
-            console.log(user, token, credential)
             GameUser.init(user.uid, user.displayName || '', user.email || '', user.photoURL || '')
-        
         }).catch((error) => {
             // Handle Errors here
             const errorCode = error.code
