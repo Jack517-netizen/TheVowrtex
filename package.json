@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "firebase": "^10.10.0",
+    "is-online": "^10.0.0",
     "yuka": "^0.7.8"
   }
 }

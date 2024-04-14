@@ -1,6 +1,7 @@
 import { Game } from './core/app.ts'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
+import isOnline from 'is-online'
 
 // Your web app's Firebase configuration (For
 // Firebase JS SDK v7.20.0 and later, measurementId is optional)
@@ -21,6 +22,14 @@ const analytics = getAnalytics(app)
 // Get canvas element
 let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
 
-// Running the app
-let GAME = new Game(render)
-GAME.init()
+// Get user network state
+isOnline().then((online) => {
+  if(online) {
+    // Running the app (if user is connected to internet)
+    let GAME = new Game(render)
+    GAME.init()
+  } else {
+    // Excuse page
+    window.location.href = '/offline-version.html'
+  }
+})
