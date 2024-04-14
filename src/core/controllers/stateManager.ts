@@ -1,65 +1,64 @@
 import { Stack } from './../../utils/stack'
 import { IGameState } from './../interfaces/state'
 import { HomeGameState } from '../scenes/home'
-import { GameplayGameState } from '../scenes/gameplay'
-import { Engine, Scene } from '@babylonjs/core'
+import { AssetContainer, Engine, Scene } from '@babylonjs/core'
 
 export class GameStateManager {
-  private _currentStates: Stack<IGameState>
-  private _engine: Engine
-  private _scene: Scene
-
-  constructor(engine: Engine, scene: Scene) {
-    this._currentStates = new Stack()
-    this._engine = engine
-    this._scene = scene
-  }
+  private static _engine: Engine
+  private static _scene: Scene
+  private static _assetContainer: AssetContainer
+  private static _currentStates: Stack<IGameState> = new Stack()
 
   /**
-   * !Switch between available states based on the provided state
-   * !@param state The state to switch to
+   * Initialize the game state manager
+   * @returns void
    */
-  public static switchState(state: IGameState) {
-    switch (state.constructor) {
-      case HomeGameState:
-        console.log('Entering menu state')
-        break
-      case GameplayGameState:
-        console.log('Entering gameplay state')
-        break
-      default:
-        console.log('Unknown game state')
-        break
-    }
+  public static init(engine: Engine, scene: Scene): void {
+    this._engine = engine
+    this._scene = scene
+
+    this._assetContainer = new AssetContainer(this._scene)
+    this.pushState(new HomeGameState(this._engine, this._scene))
   }
 
   /**
    * Get the current state for the game
    * @returns The current state
    */
-  public getCurrentState(): IGameState {
-    return this._currentStates.peek() || new HomeGameState(this._engine, this._scene)
+  public static async getCurrentState(): Promise<IGameState> {
+    return this._currentStates.peek()
+  }
+
+  /**
+   * Get the current AssetContainer for the game
+   * @returns The global assets container
+   */
+  public static getAssetContainer(): AssetContainer {
+    return this._assetContainer
+  }
+
+  /**
+   * returns true if the current state can be popped
+   * @returns Boolean
+   */
+  public static canBePop(): Boolean {
+    return !this._currentStates.isEmpty()
   }
 
   /**
    * Pop the current state from the stack and call its leaving method
    * @returns The popped state, or undefined if there's no previous state
    */
-  public popState(): IGameState | undefined {
-    const currentState = this._currentStates.pop()
-    if (currentState) {
-      currentState.leave()
-    }
-    return currentState
+  public static popState() {
+    this._currentStates.pop()
   }
 
   /**
    * Push a new state onto the stack and call its entering method
    * @param nextState The state to push
    */
-  public pushState(nextState: IGameState) {
+  public static pushState(nextState: IGameState) {
     this._currentStates.push(nextState)
-    nextState.enter()
   }
 
   /**
@@ -67,7 +66,7 @@ export class GameStateManager {
    * cleaning up resources when exiting the application
    * @returns void
    */
-  public clearState(): void {
+  public static clearState(): void {
     const currentState = this._currentStates.clear()
   }
 

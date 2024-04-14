@@ -1,4 +1,4 @@
-import { Engine, Scene } from "@babylonjs/core"
+import { Engine, Scene } from '@babylonjs/core'
 
 export interface IGameState {
   // Mark each state with unique name(SID => State ID)
@@ -6,18 +6,18 @@ export interface IGameState {
 
   /**
    * Paint interfaces
-  */
-  _draw(): void
-  
-  /**
-   * Load resources
    */
-  enter(): void
+  _draw(): void
 
   /**
-   * Dispose resources
-  */
-  leave(): void
+   * Build entire scene for a given state
+   */
+  _build(): Promise<void>
+
+  /**
+   * Dispose resources for current scene
+   */
+  _leave(): void
 
   obscure(): void
 

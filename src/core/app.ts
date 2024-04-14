@@ -4,7 +4,6 @@ import '@babylonjs/inspector'
 import { GameStateManager } from './controllers/stateManager'
 
 export class Game {
-  private _gameManager: GameStateManager
   private _engine: Engine
   private _scene: Scene
 
@@ -13,11 +12,16 @@ export class Game {
     this._scene = new Scene(this._engine)
 
     // Provide core references(Engine, Scene) to children
-    this._gameManager = new GameStateManager(this._engine, this._scene)
+    GameStateManager.init(this._engine, this._scene)
 
+    // Load inspector layer
+    this._loadInspector()
+  }
+
+  private _loadInspector() {
     window.addEventListener('keydown', (evt) => {
-      if(evt.ctrlKey && evt.key === 'i') {
-        if(this._scene.debugLayer.isVisible()) {
+      if (evt.ctrlKey && evt.key === 'i') {
+        if (this._scene.debugLayer.isVisible()) {
           this._scene.debugLayer.hide()
         } else {
           this._scene.debugLayer.show()
@@ -30,30 +34,11 @@ export class Game {
    * Initialize the game by running the render loop
    */
   public init(): void {
+    // Resizing event
+    window.addEventListener('resize', () => this._engine.resize())
     this._engine.runRenderLoop(() => {
-      this.render()
+      this._scene.render()
     })
-  }
-
-  /**
-   * Render method to draw the current game state
-   */
-  private render(): void {
-    this._gameManager.getCurrentState().enter()
-  }
-
-  /**
-   * Get the game manager instance
-   */
-  public getGameManager(): GameStateManager {
-    return this._gameManager
-  }
-
-  /**
-   * Get the engine instance
-   */
-  public getEngine(): Engine {
-    return this._engine
   }
 
   /**

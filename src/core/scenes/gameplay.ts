@@ -1,5 +1,18 @@
-import { Engine, Scene } from '@babylonjs/core'
+import {
+  ArcRotateCamera,
+  Color4,
+  Engine,
+  FreeCamera,
+  HemisphericLight,
+  MeshBuilder,
+  Scene,
+  Vector3,
+} from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
+import { GameStateManager } from '../controllers/stateManager'
+import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
+import { GameButton } from '../components/buttons'
+import { colors } from '../../configs/colors'
 
 export class GameplayGameState implements IGameState {
   private _engine: Engine
@@ -7,14 +20,16 @@ export class GameplayGameState implements IGameState {
   sid: string
 
   constructor(engine: Engine, scene: Scene) {
+    // init...
     this.sid = 'GamePlay'
     this._engine = engine
     this._scene = scene
+
+    // ...build
+    this._build()
   }
 
   _draw(): void {
-    this._drawTerrain()
-    this._drawEnemies()
     // Add UI drawing logic here if needed
     console.log('Real time: Draw')
   }
@@ -29,12 +44,11 @@ export class GameplayGameState implements IGameState {
     console.log('Real time: Revealing')
   }
 
-  enter(): void {
-    // Add UI enter logic here if needed
-    console.log('Real time: Enter')
+  async _build(): Promise<void> {
+    GameStateManager.getAssetContainer().addAllToScene()
   }
 
-  leave(): void {
+  _leave(): void {
     // Add UI leaving logic here if needed
     console.log('Real time: Leaving')
   }
