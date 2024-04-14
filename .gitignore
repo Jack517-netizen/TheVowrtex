@@ -26,3 +26,7 @@ dist-ssr
 # Personal files
 tasks.todo
 dev-dist
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

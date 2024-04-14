@@ -5,11 +5,19 @@ export default defineConfig({
   plugins: [
     VitePWA({
       injectRegister: 'auto',
-      registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 20000000
+      },
       devOptions: {
         enabled: true,
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'maskable-icon.png', 'img/no-connection.png'],
+      includeAssets: [
+        'favicon.ico',
+        'apple-touch-icon.png',
+        'maskable-icon.png',
+        '/assets/img/no-connection.png',
+        '/offline-version.html'
+      ],
       manifest: {
         name: 'Vortex',
         short_name: 'Vortex',
