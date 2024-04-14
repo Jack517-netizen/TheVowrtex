@@ -16,11 +16,7 @@ import {
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { colors } from '../../configs/colors'
-import {
-  AdvancedDynamicTexture,
-  Control,
-  StackPanel,
-} from '@babylonjs/gui'
+import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
 import { GameStateManager } from '../controllers/stateManager'
 import { GameplayGameState } from './gameplay'
 import { GameButton } from '../components/buttons'
@@ -60,9 +56,16 @@ export class HomeGameState implements IGameState {
     // --this._scene SETUP--
     this._scene.detachControl()
     // this._this._scene.clearColor = Color4.FromHexString(colors.dark.normal)
-    let camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, new Vector3(0, 0, 0), this._scene)
+    let camera = new ArcRotateCamera(
+      'camera1',
+      Math.PI / 2,
+      -Math.PI / 2.5,
+      10,
+      new Vector3(0, 0, 0),
+      this._scene,
+    )
     GameStateManager.getAssetContainer().cameras.push(camera)
-  
+
     // -- GUI SETUP --
     let homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
@@ -79,7 +82,7 @@ export class HomeGameState implements IGameState {
     let garageBtn = GameButton.createHeaderButton('garageButton', 'GARAGE')
     let settingsBtn = GameButton.createHeaderButton(
       'settingsButton',
-      'SETTINGS'
+      'SETTINGS',
     )
     let arcturusBtn = GameButton.createHeaderButton('youButton', 'ARCTURUS')
     navBar.addControl(loginBtn)
@@ -109,13 +112,13 @@ export class HomeGameState implements IGameState {
 
     homeGUI.addControl(navBar)
     homeGUI.addControl(footerBar)
-   
+
     let layers = ['/assets/img/dome1.jpg', '/assets/img/dome3.jpg']
     let backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
-    
+
     let i = 0
     setInterval(() => {
-      if(i % 2 == 0) {
+      if (i % 2 == 0) {
         backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
       } else if (i % 2 == 1) {
         backgroundLayer = new Layer('homeLayer', layers[1], this._scene, true)
@@ -123,10 +126,16 @@ export class HomeGameState implements IGameState {
       i++
     }, 5500)
 
-    let song = new Sound('start', '/assets/sounds/ncs-janji-heroes.ogg', this._scene, () => {}, {
-      autoplay: true,
-      spatialSound: true
-    })
+    let song = new Sound(
+      'start',
+      '/assets/sounds/ncs-janji-heroes.ogg',
+      this._scene,
+      () => {},
+      {
+        autoplay: true,
+        spatialSound: true,
+      },
+    )
 
     // --this._scene FINISHED LOADING--
     await this._scene.whenReadyAsync()
@@ -137,12 +146,11 @@ export class HomeGameState implements IGameState {
   _leave(): void {
     GameStateManager.getAssetContainer().moveAllFromScene()
   }
-
 }
 
 // Build user btn based on auth state
 function buildUserBtn() {
-  if(GameUser.getUid() != '') {
+  if (GameUser.getUid() != '') {
     let youBtn = GameButton.createHeaderButton('youButton', 'YOU')
     youBtn.onPointerClickObservable.add(() => {
       //TODO: Show user profile details in POPUP
@@ -155,8 +163,7 @@ function buildUserBtn() {
       FirebaseOAuth.login()
       buildUserBtn()
     })
-    
+
     return loginBtn
   }
 }
-

@@ -19,19 +19,23 @@ const firebaseConfig: any = {
 const app = initializeApp(firebaseConfig)
 const analytics = getAnalytics(app)
 
-// Get canvas element
-let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
-render.width = window.innerWidth
-render.height = window.innerHeight
+window.addEventListener('DOMContentLoaded', () => {
+  // Get canvas element
+  let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
 
-// Get user network state
-isOnline().then((online) => {
-  if(online) {
-    // Running the app (if user is connected to internet)
-    let GAME = new Game(render)
-    GAME.init()
-  } else {
-    // Excuse page
-    window.location.href = '/assets/img/offline-version.html'
-  }
+  // Get user network state
+  isOnline().then((online) => {
+    if (online) {
+      // Set canvas dimensions to match window size
+      render.width = window.innerWidth
+      render.height = window.innerHeight
+
+      // Running the app (if user is connected to internet)
+      let GAME = new Game(render)
+      GAME.init()
+    } else {
+      // Excuse page
+      window.location.href = '/assets/img/offline-version.html'
+    }
+  })
 })

@@ -41,35 +41,35 @@
     <meta name="description" content="The Ultimate Racing Universe" />
     <style>
       .loader {
-          position: fixed;
-          top: O;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-color: #f3f3f3;
-          transition: opacity 0.75s, visibility 0.75s;
+        position: fixed;
+        top: O;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f3f3f3;
+        transition: opacity 0.75s, visibility 0.75s;
       }
       .loader::after {
-          content: '';
-          width: 35px;
-          height: 35px;
-          border: 15px solid #dddddd;
-          border-top: 15px solid #dc134c;
-          border-radius: 50%;
-          animation: loading 0.75s ease infinite;
+        content: '';
+        width: 35px;
+        height: 35px;
+        border: 15px solid #dddddd;
+        border-top: 15px solid #dc134c;
+        border-radius: 50%;
+        animation: loading 0.75s ease infinite;
       }
 
       @keyframes loading {
-          from { transform: rotate(0turn);}
-          to { transform: rotate(1turn);}
+        from { transform: rotate(0turn);}
+        to { transform: rotate(1turn);}
       }
       .loader--hidden {
-          visibility: hidden;
-          opacity: 0;
-          display: none;
+        visibility: hidden;
+        opacity: 0;
+        display: none;
       }
     </style>
     <script>
