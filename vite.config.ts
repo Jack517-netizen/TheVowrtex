@@ -6,6 +6,9 @@ export default defineConfig({
     VitePWA({
       injectRegister: 'auto',
       registerType: 'autoUpdate',
+      // maximumFileSizeToCacheInBytes: {
+
+      // },
       devOptions: {
         enabled: true,
       },
