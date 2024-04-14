@@ -8,7 +8,7 @@ export class GameButton {
    * @param id the identifier of button
    */
   public static createHeaderButton(id: string, txt: string): Button {
-    let _tmp = Button.CreateImageWithCenterTextButton(id, txt, '/assets/icons/vortex_1.jpg')
+    let _tmp = Button.CreateImageButton(id, txt, '/vite.svg')
     _tmp.width = screen.width / 6.8 + 'px'
     _tmp.height = '60px'
     _tmp.color = colors.white.normal

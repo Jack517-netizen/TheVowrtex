@@ -1,11 +1,8 @@
-<!doctype html>
-<!-- Designed by JackJosue517 @ Arcturus Games Studio. -->
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/assets/img/maskable-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/assets/stylesheets/styles.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,20 +35,30 @@
       href="/assets/img/maskable-icon.png"
       color="#FFFFFF"
     />
-    <title>Vortex.</title>
+    <title>Vortex. | Offline page</title>
     <meta name="description" content="The Ultimate Racing Universe" />
     <style>
+      .content {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+      }
+      .content img {
+        width: 50%;
+        height: 50%;
+      }
       .loader {
-          position: fixed;
-          top: O;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-color: #f3f3f3;
-          transition: opacity 0.75s, visibility 0.75s;
+        position: fixed;
+        top: O;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f3f3f3;
+        transition: opacity 0.75s, visibility 0.75s;
       }
       .loader::after {
           content: '';
@@ -77,15 +84,16 @@
           const loader = document.querySelector('.loader')
           loader.classList.add('loader--hidden')
           loader.addEventListener('transitionend', () => {
-            document.body.removeChild(document.querySelector('.loader'))
+            document.body.removeChild(loader)
           })
       })
     </script>
-  </head>
-  <body>
+</head>
+<body>
     <div class="loader"></div>
-    <canvas id="renderCanvas"></canvas>
-    <script src="https://unpkg.com/earcut@2.2.4/dist/earcut.min.js"></script>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <div class="content">
+      <img src="/assets/img/no-connection.png" alt="Illustration for no connection">
+      <h1>Looks like you're offline! No worries, our devs are busy creating an offline version of the game just for you.</h1>
+    </div>
+</body>
 </html>
