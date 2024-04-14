@@ -30,6 +30,6 @@ isOnline().then((online) => {
     GAME.init()
   } else {
     // Excuse page
-    window.location.href = '/offline-version.html'
+    window.location.href = '/assets/img/offline-version.html'
   }
 })

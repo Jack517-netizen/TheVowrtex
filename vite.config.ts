@@ -11,7 +11,13 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'maskable-icon.png', 'img/no-connection.png'],
+      includeAssets: [
+        'favicon.ico',
+        'apple-touch-icon.png',
+        'maskable-icon.png',
+        'img/no-connection.png',
+        'img/offline-version.html',
+      ],
       manifest: {
         name: 'Vortex',
         short_name: 'Vortex',
