@@ -21,6 +21,8 @@ const analytics = getAnalytics(app)
 
 // Get canvas element
 let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
+render.width = window.innerWidth
+render.height = window.innerHeight
 
 // Get user network state
 isOnline().then((online) => {
