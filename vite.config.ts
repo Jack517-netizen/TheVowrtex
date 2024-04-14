@@ -15,8 +15,8 @@ export default defineConfig({
         'favicon.ico',
         'apple-touch-icon.png',
         'maskable-icon.png',
-        'img/no-connection.png',
-        'offline-version.html'
+        '/assets/img/no-connection.png',
+        '/offline-version.html'
       ],
       manifest: {
         name: 'Vortex',
