@@ -5,10 +5,9 @@ export default defineConfig({
   plugins: [
     VitePWA({
       injectRegister: 'auto',
-      registerType: 'autoUpdate',
-      // maximumFileSizeToCacheInBytes: {
-
-      // },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 20000000
+      },
       devOptions: {
         enabled: true,
       },

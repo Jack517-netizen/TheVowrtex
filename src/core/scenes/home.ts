@@ -123,7 +123,7 @@ export class HomeGameState implements IGameState {
       i++
     }, 5500)
 
-    let song = new Sound('start', '/assets/sounds/ncs-janji-heroes.ogg', this._scene, () => {}, {
+    let song = new Sound('start', '/assets/sounds/ncs-symbolism.ogg', this._scene, () => {}, {
       autoplay: true,
       spatialSound: true
     })
