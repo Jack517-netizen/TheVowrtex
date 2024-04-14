@@ -1,10 +1,11 @@
-import { App } from './core/app.ts'
+import { Game } from './core/app.ts'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
+import isOnline from 'is-online'
 
-// Your web app's Firebase configuration (For 
+// Your web app's Firebase configuration (For
 // Firebase JS SDK v7.20.0 and later, measurementId is optional)
-const firebaseConfig = {
+const firebaseConfig: any = {
   apiKey: 'AIzaSyDqSkPyq2l92R27JFbYyYQmNdYh-UpRcJ4',
   authDomain: 'vortexx-e89f8.firebaseapp.com',
   projectId: 'vortexx-e89f8',
@@ -18,4 +19,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const analytics = getAnalytics(app)
 
-new App()
+// Get canvas element
+let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
+
+// Get user network state
+isOnline().then((online) => {
+  if(online) {
+    // Running the app (if user is connected to internet)
+    let GAME = new Game(render)
+    GAME.init()
+  } else {
+    // Excuse page
+    window.location.href = '/offline-version.html'
+  }
+})
