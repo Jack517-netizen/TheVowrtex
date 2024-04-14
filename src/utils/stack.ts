@@ -13,7 +13,9 @@ export class Stack<T> {
     return this.items.pop()
   }
 
-  peek(): T | undefined {
+  // Undefined return removed
+  // because the Home state is safely always initialized
+  peek(): T {
     return this.items[this.items.length - 1]
   }
 
@@ -26,7 +28,6 @@ export class Stack<T> {
   }
 
   clear() {
-    return this.items = []
+    return (this.items = [])
   }
-
 }
