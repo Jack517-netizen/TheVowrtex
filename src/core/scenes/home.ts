@@ -1,31 +1,24 @@
 import {
   ArcRotateCamera,
-  Color4,
   Engine,
-  HemisphericLight,
-  MeshBuilder,
   Scene,
-  Sound,
   Vector3,
-  VideoDome,
-  StandardMaterial,
-  CubeTexture,
-  Texture,
-  Color3,
   Layer,
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { colors } from '../../configs/colors'
 import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
 import { GameStateManager } from '../controllers/stateManager'
-import { GameplayGameState } from './gameplay'
 import { GameButton } from '../components/buttons'
 import { FirebaseOAuth } from '../../api/firebase/authentication'
 import { GameUser } from '../../entities/user'
+import { AudioManager } from '../controllers/audioManager'
+import { SetupGameState } from './setup'
 
 export class HomeGameState implements IGameState {
   private _engine: Engine
   private _scene: Scene
+  private _audioManager: AudioManager
   sid: string
 
   constructor(engine: Engine, scene: Scene) {
@@ -33,6 +26,7 @@ export class HomeGameState implements IGameState {
     this.sid = 'Home'
     this._engine = engine
     this._scene = scene
+    this._audioManager = new AudioManager()
 
     // ...build
     this._build()
@@ -66,6 +60,7 @@ export class HomeGameState implements IGameState {
     )
     GameStateManager.getAssetContainer().cameras.push(camera)
 
+    this._audioManager.playSound('neon-furry.ogg')
     // -- GUI SETUP --
     let homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
@@ -104,7 +99,7 @@ export class HomeGameState implements IGameState {
     playBtn.onPointerDownObservable.add(() => {
       this._leave()
       GameStateManager.pushState(
-        new GameplayGameState(this._engine, this._scene),
+        new SetupGameState(this._engine, this._scene),
       )
     })
     footerBar.addControl(leaderBtn)
@@ -126,17 +121,6 @@ export class HomeGameState implements IGameState {
       i++
     }, 5500)
 
-    let song = new Sound(
-      'start',
-      '/assets/sounds/ncs-janji-heroes.ogg',
-      this._scene,
-      () => {},
-      {
-        autoplay: true,
-        spatialSound: true,
-      },
-    )
-
     // --this._scene FINISHED LOADING--
     await this._scene.whenReadyAsync()
     this._scene.attachControl()
@@ -145,6 +129,7 @@ export class HomeGameState implements IGameState {
 
   _leave(): void {
     GameStateManager.getAssetContainer().moveAllFromScene()
+    this._scene.dispose()
   }
 }
 

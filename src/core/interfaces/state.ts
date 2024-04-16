@@ -1,5 +1,3 @@
-import { Engine, Scene } from '@babylonjs/core'
-
 export interface IGameState {
   // Mark each state with unique name(SID => State ID)
   sid: string
