@@ -1,35 +1,24 @@
 import {
   ArcRotateCamera,
-  Color4,
   Engine,
-  HemisphericLight,
-  MeshBuilder,
   Scene,
-  Sound,
   Vector3,
-  VideoDome,
-  StandardMaterial,
-  CubeTexture,
-  Texture,
-  Color3,
   Layer,
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { colors } from '../../configs/colors'
-import {
-  AdvancedDynamicTexture,
-  Control,
-  StackPanel,
-} from '@babylonjs/gui'
+import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
 import { GameStateManager } from '../controllers/stateManager'
-import { GameplayGameState } from './gameplay'
 import { GameButton } from '../components/buttons'
 import { FirebaseOAuth } from '../../api/firebase/authentication'
 import { GameUser } from '../../entities/user'
+import { AudioManager } from '../controllers/audioManager'
+import { SetupGameState } from './setup'
 
 export class HomeGameState implements IGameState {
   private _engine: Engine
   private _scene: Scene
+  private _audioManager: AudioManager
   sid: string
 
   constructor(engine: Engine, scene: Scene) {
@@ -37,6 +26,7 @@ export class HomeGameState implements IGameState {
     this.sid = 'Home'
     this._engine = engine
     this._scene = scene
+    this._audioManager = new AudioManager()
 
     // ...build
     this._build()
@@ -60,9 +50,17 @@ export class HomeGameState implements IGameState {
     // --this._scene SETUP--
     this._scene.detachControl()
     // this._this._scene.clearColor = Color4.FromHexString(colors.dark.normal)
-    let camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, new Vector3(0, 0, 0), this._scene)
+    let camera = new ArcRotateCamera(
+      'camera1',
+      Math.PI / 2,
+      -Math.PI / 2.5,
+      10,
+      new Vector3(0, 0, 0),
+      this._scene,
+    )
     GameStateManager.getAssetContainer().cameras.push(camera)
-  
+
+    this._audioManager.playSound('neon-fury.ogg')
     // -- GUI SETUP --
     let homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
@@ -79,9 +77,12 @@ export class HomeGameState implements IGameState {
     let garageBtn = GameButton.createHeaderButton('garageButton', 'GARAGE')
     let settingsBtn = GameButton.createHeaderButton(
       'settingsButton',
-      'SETTINGS'
+      'SETTINGS',
     )
     let arcturusBtn = GameButton.createHeaderButton('youButton', 'ARCTURUS')
+    arcturusBtn.onPointerClickObservable.add(() => {
+      window.open('https://studioarcturus.blogspot.com', '_blank')
+    })
     navBar.addControl(loginBtn)
     navBar.addControl(texBtn)
     navBar.addControl(tokenBtn)
@@ -101,7 +102,7 @@ export class HomeGameState implements IGameState {
     playBtn.onPointerDownObservable.add(() => {
       this._leave()
       GameStateManager.pushState(
-        new GameplayGameState(this._engine, this._scene),
+        new SetupGameState(this._engine, this._scene),
       )
     })
     footerBar.addControl(leaderBtn)
@@ -109,24 +110,19 @@ export class HomeGameState implements IGameState {
 
     homeGUI.addControl(navBar)
     homeGUI.addControl(footerBar)
-   
+
     let layers = ['/assets/img/dome1.jpg', '/assets/img/dome3.jpg']
     let backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
-    
+
     let i = 0
     setInterval(() => {
-      if(i % 2 == 0) {
+      if (i % 2 == 0) {
         backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
       } else if (i % 2 == 1) {
         backgroundLayer = new Layer('homeLayer', layers[1], this._scene, true)
       }
       i++
     }, 5500)
-
-    let song = new Sound('start', '/assets/sounds/ncs-janji-heroes.ogg', this._scene, () => {}, {
-      autoplay: true,
-      spatialSound: true
-    })
 
     // --this._scene FINISHED LOADING--
     await this._scene.whenReadyAsync()
@@ -136,13 +132,13 @@ export class HomeGameState implements IGameState {
 
   _leave(): void {
     GameStateManager.getAssetContainer().moveAllFromScene()
+    this._scene.dispose()
   }
-
 }
 
 // Build user btn based on auth state
 function buildUserBtn() {
-  if(GameUser.getUid() != '') {
+  if (GameUser.getUid() != '') {
     let youBtn = GameButton.createHeaderButton('youButton', 'YOU')
     youBtn.onPointerClickObservable.add(() => {
       //TODO: Show user profile details in POPUP
@@ -155,8 +151,7 @@ function buildUserBtn() {
       FirebaseOAuth.login()
       buildUserBtn()
     })
-    
+
     return loginBtn
   }
 }
-

@@ -1,5 +1,6 @@
 import { Button, Container, Control } from '@babylonjs/gui'
 import { colors } from '../../configs/colors'
+import { AudioManager } from '../controllers/audioManager'
 
 export class GameButton {
   /**
@@ -25,6 +26,10 @@ export class GameButton {
       default:
         _tmp.background = colors.violet.rainbow
     }
+
+    _tmp.onPointerClickObservable.add(() => {
+      new AudioManager().playSound('click-ui.mp3')
+    })
     return _tmp
   }
 
@@ -45,6 +50,9 @@ export class GameButton {
     _tmp.paddingRight = '15px'
     _tmp.background = colors.blue.rainbow
 
+    _tmp.onPointerClickObservable.add(() => {
+      new AudioManager().playSound('click-ui.mp3')
+    })
     return _tmp
   }
 }
