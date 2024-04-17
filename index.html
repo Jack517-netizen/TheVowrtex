@@ -68,17 +68,24 @@
           to { transform: rotate(1turn);}
       }
       .loader--hidden {
+<<<<<<< HEAD
           visibility: hidden;
           opacity: 0;
+=======
+        visibility: hidden;
+        opacity: 0;
+        display: none;
+        width: 0;
+        height: 0;
+>>>>>>> 872d13f (Spinner doesn't appear fixed)
       }
     </style>
+    <link rel="stylesheet" href="/assets/stylesheets/styles.css" />
     <script>
       window.addEventListener('load', () => {
-          const loader = document.querySelector('.loader')
-          loader.classList.add('loader--hidden')
-          loader.addEventListener('transitionend', () => {
-            document.body.removeChild(document.querySelector('.loader'))
-          })
+        const loader = document.querySelector('.loader')
+        if (loader) loader.classList.add('loader--hidden')
+        document.body.firstElementChild.remove()
       })
     </script>
   </head>

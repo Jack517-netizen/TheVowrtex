@@ -62,9 +62,9 @@ export class AudioManager implements IAudioLayer {
    * @returns void
    */
   public static disposeAllSongs(): void {
-    AudioManager._instances.forEach(audioTrack => {
+    AudioManager._instances.forEach((audioTrack) => {
       audioTrack.dispose()
-    });
+    })
   }
 
   /**
@@ -74,11 +74,11 @@ export class AudioManager implements IAudioLayer {
    * @returns void
    */
   public static freezeAllSongs(): void {
-    AudioManager._instances.forEach(audioTrack => {
-      if(audioTrack.isPlaying) {
+    AudioManager._instances.forEach((audioTrack) => {
+      if (audioTrack.isPlaying) {
         audioTrack.pause()
       }
-    });
+    })
   }
 
   /**
@@ -88,10 +88,10 @@ export class AudioManager implements IAudioLayer {
    * @returns void
    */
   public static resumeAllSongs(): void {
-    AudioManager._instances.forEach(audioTrack => {
-      if(audioTrack.isPaused) {
+    AudioManager._instances.forEach((audioTrack) => {
+      if (audioTrack.isPaused) {
         audioTrack.play()
       }
-    });
+    })
   }
 }
