@@ -1,10 +1,4 @@
-import {
-  ArcRotateCamera,
-  Engine,
-  Scene,
-  Vector3,
-  Layer,
-} from '@babylonjs/core'
+import { ArcRotateCamera, Engine, Scene, Vector3, Layer } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { colors } from '../../configs/colors'
 import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
@@ -101,9 +95,7 @@ export class HomeGameState implements IGameState {
     let playBtn = GameButton.createFooterButton('playButton', 'PLAY')
     playBtn.onPointerDownObservable.add(() => {
       this._leave()
-      GameStateManager.pushState(
-        new SetupGameState(this._engine, this._scene),
-      )
+      GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
     })
     footerBar.addControl(leaderBtn)
     footerBar.addControl(playBtn)

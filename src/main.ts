@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
       GAME.init()
     } else {
       // Excuse page
-      window.location.href = '/assets/img/offline-version.html'
+      window.location.href = '/offline/'
     }
   })
 })
