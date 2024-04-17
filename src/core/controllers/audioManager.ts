@@ -4,6 +4,7 @@ import { AudioType } from '../enums/audio'
 
 export class AudioManager implements IAudioLayer {
   private _gameAudio: GameAudio
+  private static _instances: Array<GameAudio> = new Array()
 
   /**
    * Play a given sound
@@ -12,6 +13,7 @@ export class AudioManager implements IAudioLayer {
    */
   public playSound(url: string): void {
     this._gameAudio = new GameAudio(url, AudioType.MUSIC)
+    AudioManager._instances.push(this._gameAudio)
   }
 
   /**
@@ -41,5 +43,55 @@ export class AudioManager implements IAudioLayer {
    */
   public setNewTrack(newGameAudio: GameAudio): void {
     this._gameAudio = newGameAudio
+  }
+
+  /**
+   * Get the number of
+   * all audio tracks managed by audioManager
+   * @param void
+   * @returns number
+   */
+  public static getNumberOfTracks(): number {
+    return AudioManager._instances.length
+  }
+
+  /**
+   * Unload ressources
+   * associated to audio track
+   * @param void
+   * @returns void
+   */
+  public static disposeAllSongs(): void {
+    AudioManager._instances.forEach(audioTrack => {
+      audioTrack.dispose()
+    });
+  }
+
+  /**
+   * Freeze every audio track
+   * playing in background
+   * @param void
+   * @returns void
+   */
+  public static freezeAllSongs(): void {
+    AudioManager._instances.forEach(audioTrack => {
+      if(audioTrack.isPlaying) {
+        audioTrack.pause()
+      }
+    });
+  }
+
+  /**
+   * Resume every audio track
+   * playing in background
+   * @param void
+   * @returns void
+   */
+  public static resumeAllSongs(): void {
+    AudioManager._instances.forEach(audioTrack => {
+      if(audioTrack.isPaused) {
+        audioTrack.play()
+      }
+    });
   }
 }

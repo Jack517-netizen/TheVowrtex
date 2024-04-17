@@ -60,7 +60,7 @@ export class HomeGameState implements IGameState {
     )
     GameStateManager.getAssetContainer().cameras.push(camera)
 
-    this._audioManager.playSound('neon-furry.ogg')
+    this._audioManager.playSound('neon-fury.ogg')
     // -- GUI SETUP --
     let homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
@@ -80,6 +80,9 @@ export class HomeGameState implements IGameState {
       'SETTINGS',
     )
     let arcturusBtn = GameButton.createHeaderButton('youButton', 'ARCTURUS')
+    arcturusBtn.onPointerClickObservable.add(() => {
+      window.open('https://studioarcturus.blogspot.com', '_blank')
+    })
     navBar.addControl(loginBtn)
     navBar.addControl(texBtn)
     navBar.addControl(tokenBtn)

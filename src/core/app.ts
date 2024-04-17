@@ -2,6 +2,7 @@ import { Engine, Scene } from '@babylonjs/core'
 import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
 import { GameStateManager } from './controllers/stateManager'
+import { AudioManager } from './controllers/audioManager'
 
 export class Game {
   private _engine: Engine
@@ -16,6 +17,21 @@ export class Game {
 
     // Load inspector layer
     this._loadInspector()
+
+    // Get status/update at top of app
+    this._listenning()
+  }
+
+  private _listenning() {
+    // Game app gained focus
+    window.addEventListener('focus', () => {
+      AudioManager.resumeAllSongs()
+    })
+
+    // Game app losts focus
+    window.addEventListener('blur', () => {
+      AudioManager.freezeAllSongs()
+    })
   }
 
   private _loadInspector() {
