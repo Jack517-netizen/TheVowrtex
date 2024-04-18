@@ -21,6 +21,8 @@ export const colors = {
     urban: '#121212',
 
     tennis: '#D8C508',
+
+    overlay: '#D9000000'
   },
 
   black: {

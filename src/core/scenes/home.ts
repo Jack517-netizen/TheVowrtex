@@ -1,4 +1,11 @@
-import { ArcRotateCamera, Engine, Scene, Vector3, Layer } from '@babylonjs/core'
+import {
+  ArcRotateCamera,
+  Engine,
+  Scene,
+  Vector3,
+  Layer,
+  KeepAssets,
+} from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { colors } from '../../configs/colors'
 import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
@@ -8,11 +15,14 @@ import { FirebaseOAuth } from '../../api/firebase/authentication'
 import { GameUser } from '../../entities/user'
 import { AudioManager } from '../controllers/audioManager'
 import { SetupGameState } from './setup'
+import { GamePopup } from '../components/popup'
 
 export class HomeGameState implements IGameState {
   private _engine: Engine
   private _scene: Scene
+  private _homeGUI: AdvancedDynamicTexture
   private _audioManager: AudioManager
+  private _keepAssets: KeepAssets
   sid: string
 
   constructor(engine: Engine, scene: Scene) {
@@ -20,7 +30,9 @@ export class HomeGameState implements IGameState {
     this.sid = 'Home'
     this._engine = engine
     this._scene = scene
+    this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     this._audioManager = new AudioManager()
+    this._keepAssets = new KeepAssets()
 
     // ...build
     this._build()
@@ -52,11 +64,10 @@ export class HomeGameState implements IGameState {
       new Vector3(0, 0, 0),
       this._scene,
     )
-    GameStateManager.getAssetContainer().cameras.push(camera)
+    this._keepAssets.cameras.push(camera)
 
     this._audioManager.playSound('neon-fury.ogg')
     // -- GUI SETUP --
-    let homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
     let navBar = new StackPanel('navigationBar')
     navBar.isVertical = false
@@ -66,16 +77,60 @@ export class HomeGameState implements IGameState {
     navBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
     let loginBtn = buildUserBtn()
     let texBtn = GameButton.createHeaderButton('texButton', 'TEX')
+    texBtn.onPointerClickObservable.add(() => {
+      if(GameUser.getUid() === '') {
+        return this._homeGUI.addControl(GamePopup.showInfoPopup(
+          'You must log in before!\n Anonymous login system will be coming soon...'
+        ))
+      }
+      // TODO: Game logic goes here
+    })
     let tokenBtn = GameButton.createHeaderButton('tokenButton', 'TOKEN')
+    tokenBtn.onPointerClickObservable.add(() => {
+      if(GameUser.getUid() === '') {
+        return this._homeGUI.addControl(GamePopup.showInfoPopup(
+          'You must log in before!\n Anonymous login system will be coming soon...'
+        ))
+      }
+      // TODO: Game logic goes here
+    })
     let starBtn = GameButton.createHeaderButton('starButton', 'STAR')
+    starBtn.onPointerClickObservable.add(() => {
+      if(GameUser.getUid() === '') {
+        return this._homeGUI.addControl(GamePopup.showInfoPopup(
+          'You must log in before!\n Anonymous login system will be coming soon...'
+        ))
+      }
+      // TODO: Game logic goes here
+    })
     let garageBtn = GameButton.createHeaderButton('garageButton', 'GARAGE')
+    garageBtn.onPointerClickObservable.add(() => {
+      if(GameUser.getUid() === '') {
+        return this._homeGUI.addControl(GamePopup.showInfoPopup(
+          'You must log in before!\n Anonymous login system will be coming soon...'
+        ))
+      }
+      // TODO: Game logic goes here
+    })
     let settingsBtn = GameButton.createHeaderButton(
       'settingsButton',
       'SETTINGS',
     )
+    settingsBtn.onPointerClickObservable.add(() => {
+      if(GameUser.getUid() === '') {
+        return this._homeGUI.addControl(GamePopup.showInfoPopup(
+          'You must log in before!\n Anonymous login system will be coming soon...'
+        ))
+      }
+      // TODO: Game logic goes here
+    })
     let arcturusBtn = GameButton.createHeaderButton('youButton', 'ARCTURUS')
     arcturusBtn.onPointerClickObservable.add(() => {
-      window.open('https://studioarcturus.blogspot.com', '_blank')
+      // TODO: User - Studio links
+      return this._homeGUI.addControl(GamePopup.showInfoPopup(
+        'GET IN TOUCH'
+      ))
+      //*window.open('https://studioarcturus.blogspot.com', '_blank')
     })
     navBar.addControl(loginBtn)
     navBar.addControl(texBtn)
@@ -92,16 +147,28 @@ export class HomeGameState implements IGameState {
     footerBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
     let leaderBtn = GameButton.createFooterButton('leaderButton', 'LEADERBOARD')
     leaderBtn.background = colors.yellow.inclusive
+    leaderBtn.onPointerClickObservable.add(() => {
+      // TODO: Game logic goes here
+      return this._homeGUI.addControl(GamePopup.showInfoPopup(
+        'LEADERBOARD'
+      ))
+    })
     let playBtn = GameButton.createFooterButton('playButton', 'PLAY')
-    playBtn.onPointerDownObservable.add(() => {
+    playBtn.onPointerClickObservable.add(() => {
+      if(GameUser.getUid() === '') {
+        return this._homeGUI.addControl(GamePopup.showInfoPopup(
+          'You must log in before! Anonymous login system will be coming soon...'
+        ))
+      }
       this._leave()
       GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
+      // TODO: Game logic goes here
     })
     footerBar.addControl(leaderBtn)
     footerBar.addControl(playBtn)
 
-    homeGUI.addControl(navBar)
-    homeGUI.addControl(footerBar)
+    this._homeGUI.addControl(navBar)
+    this._homeGUI.addControl(footerBar)
 
     let layers = ['/assets/img/dome1.jpg', '/assets/img/dome3.jpg']
     let backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
@@ -123,8 +190,7 @@ export class HomeGameState implements IGameState {
   }
 
   _leave(): void {
-    GameStateManager.getAssetContainer().moveAllFromScene()
-    this._scene.dispose()
+    GameStateManager.getAssetContainer().moveAllFromScene(this._keepAssets)
   }
 }
 

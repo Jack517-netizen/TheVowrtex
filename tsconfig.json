@@ -5,6 +5,9 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
+    "types": [
+      "vite-plugin-pwa/client"
+    ],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

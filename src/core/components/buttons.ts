@@ -1,6 +1,7 @@
 import { Button, Container, Control } from '@babylonjs/gui'
 import { colors } from '../../configs/colors'
 import { AudioManager } from '../controllers/audioManager'
+import { GameUser } from '../../entities/user'
 
 export class GameButton {
   /**
@@ -9,22 +10,90 @@ export class GameButton {
    * @param id the identifier of button
    */
   public static createHeaderButton(id: string, txt: string): Button {
-    let _tmp = Button.CreateImageButton(id, txt, '/vite.svg')
-    _tmp.width = screen.width / 6.8 + 'px'
-    _tmp.height = '60px'
-    _tmp.color = colors.white.normal
-    _tmp.thickness = 0.5
-    _tmp.paddingRight = '3px'
-
+    let _tmp
+    
     switch (txt.toLocaleLowerCase()) {
       case 'login':
+        _tmp = Button.CreateImageButton(id, txt, '/assets/icons/login.png')
         _tmp.background = colors.red.crimson
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
+        break
+      case 'user':
+        _tmp = Button.CreateImageButton(id, txt, '/assets/icons/user.png')
+        _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
+        break
+      case 'tex':
+        _tmp = Button.CreateImageButton(id, txt + '   ' + GameUser.getTex(), '/assets/icons/tex.png')
+       _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
+        break
+      case 'token':
+        _tmp = Button.CreateImageButton(id, txt + '   ' + GameUser.getToken(), '/assets/icons/token.png')
+        _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
+        break
+      case 'star':
+        _tmp = Button.CreateImageButton(id, txt + '   ' + GameUser.getStar(), '/assets/icons/star.png')
+        _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
+        break
+      case 'settings':
+        _tmp = Button.CreateImageButton(id, txt, '/assets/icons/settings.png')
+        _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
+        break
+      case 'garage':
+        _tmp = Button.CreateImageButton(id, txt, '/assets/icons/garage.png')
+        _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
         break
       case 'arcturus':
+        _tmp = Button.CreateImageButton(id, txt, '/assets/icons/arcturus.png')
+        _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
         _tmp.background = colors.yellow.inclusive
         break
       default:
+        _tmp = Button.CreateImageButton(id, txt, '/assets/icons/vite.svg')
         _tmp.background = colors.violet.rainbow
+        _tmp.width = screen.width / 7 + 'px'
+        _tmp.height = '60px'
+        _tmp.color = colors.white.normal
+        _tmp.thickness = 0.5
+        _tmp.paddingRight = '3px'
     }
 
     _tmp.onPointerClickObservable.add(() => {
@@ -39,7 +108,12 @@ export class GameButton {
    * @param id the identifier of button
    */
   public static createFooterButton(id: string, txt: string): Button {
-    let _tmp = Button.CreateSimpleButton(id, txt)
+    let _tmp
+    if(txt.toLocaleLowerCase() === 'play') {
+      _tmp = Button.CreateImageButton(id, txt, '/assets/icons/play.png')
+    } else {
+      _tmp = Button.CreateImageButton(id, txt, '/assets/icons/leaderboard.png')
+    }
     _tmp.width = '300px'
     _tmp.height = '65px'
     _tmp.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
