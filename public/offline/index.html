@@ -38,6 +38,9 @@
     <title>Vortex. | Offline page</title>
     <meta name="description" content="The Ultimate Racing Universe" />
     <style>
+      body {
+        font-family: 'Rubik', sans-serif;
+      }
       .content {
         display: flex;
         align-items: center;
@@ -77,15 +80,16 @@
       .loader--hidden {
           visibility: hidden;
           opacity: 0;
+          width: 0;
+          height: 0;
+          display: none;
       }
     </style>
     <script>
       window.addEventListener('load', () => {
-          const loader = document.querySelector('.loader')
-          if (loader) loader.classList.add('loader--hidden')
-          loader.addEventListener('transitionend', () => {
-            loader.remove()
-          })
+        const loader = document.querySelector('.loader')
+        if (loader) loader.classList.add('loader--hidden')
+        document.body.firstElementChild.remove()
       })
     </script>
 </head>
