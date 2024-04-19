@@ -2,6 +2,7 @@ import { Button, Container, Control } from '@babylonjs/gui'
 import { colors } from '../../configs/colors'
 import { AudioManager } from '../controllers/audioManager'
 import { GameUser } from '../../entities/user'
+import { UserManager } from '../controllers/userManager'
 
 export class GameButton {
   /**
@@ -11,7 +12,7 @@ export class GameButton {
    */
   public static createHeaderButton(id: string, txt: string): Button {
     let _tmp
-    
+
     switch (txt.toLocaleLowerCase()) {
       case 'login':
         _tmp = Button.CreateImageButton(id, txt, '/assets/icons/login.png')
@@ -32,8 +33,12 @@ export class GameButton {
         _tmp.paddingRight = '3px'
         break
       case 'tex':
-        _tmp = Button.CreateImageButton(id, txt + '   ' + GameUser.getTex(), '/assets/icons/tex.png')
-       _tmp.background = colors.violet.rainbow
+        _tmp = Button.CreateImageButton(
+          id,
+          txt + '   ' + UserManager.getCurrentGameUser().getTex(),
+          '/assets/icons/tex.png',
+        )
+        _tmp.background = colors.violet.rainbow
         _tmp.width = screen.width / 7 + 'px'
         _tmp.height = '60px'
         _tmp.color = colors.white.normal
@@ -41,7 +46,11 @@ export class GameButton {
         _tmp.paddingRight = '3px'
         break
       case 'token':
-        _tmp = Button.CreateImageButton(id, txt + '   ' + GameUser.getToken(), '/assets/icons/token.png')
+        _tmp = Button.CreateImageButton(
+          id,
+          txt + '   ' + UserManager.getCurrentGameUser().getToken(),
+          '/assets/icons/token.png',
+        )
         _tmp.background = colors.violet.rainbow
         _tmp.width = screen.width / 7 + 'px'
         _tmp.height = '60px'
@@ -50,7 +59,11 @@ export class GameButton {
         _tmp.paddingRight = '3px'
         break
       case 'star':
-        _tmp = Button.CreateImageButton(id, txt + '   ' + GameUser.getStar(), '/assets/icons/star.png')
+        _tmp = Button.CreateImageButton(
+          id,
+          txt + '   ' + UserManager.getCurrentGameUser().getStar(),
+          '/assets/icons/star.png',
+        )
         _tmp.background = colors.violet.rainbow
         _tmp.width = screen.width / 7 + 'px'
         _tmp.height = '60px'
@@ -109,7 +122,7 @@ export class GameButton {
    */
   public static createFooterButton(id: string, txt: string): Button {
     let _tmp
-    if(txt.toLocaleLowerCase() === 'play') {
+    if (txt.toLocaleLowerCase() === 'play') {
       _tmp = Button.CreateImageButton(id, txt, '/assets/icons/play.png')
     } else {
       _tmp = Button.CreateImageButton(id, txt, '/assets/icons/leaderboard.png')

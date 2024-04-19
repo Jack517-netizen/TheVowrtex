@@ -11,11 +11,10 @@ import { colors } from '../../configs/colors'
 import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
 import { GameStateManager } from '../controllers/stateManager'
 import { GameButton } from '../components/buttons'
-import { FirebaseOAuth } from '../../api/firebase/authentication'
-import { GameUser } from '../../entities/user'
 import { AudioManager } from '../controllers/audioManager'
 import { SetupGameState } from './setup'
 import { GamePopup } from '../components/popup'
+import { UserManager } from '../controllers/userManager'
 
 export class HomeGameState implements IGameState {
   private _engine: Engine
@@ -34,20 +33,15 @@ export class HomeGameState implements IGameState {
     this._audioManager = new AudioManager()
     this._keepAssets = new KeepAssets()
 
+    // ...attach all listener (understand which affect the rebuild)
+    this._listener()
+
     // ...build
     this._build()
   }
 
-  async _draw(): Promise<void> {
-    console.log('Real time: Drawing.')
-  }
-
-  obscure(): void {
-    console.log('Real time: Obscuring.')
-  }
-
-  reveal(): void {
-    console.log('Real time: Revealing.')
+  async _listener(): Promise<void> {
+    if (UserManager.userStateChanged()) this._build()
   }
 
   async _build(): Promise<void> {
@@ -75,40 +69,89 @@ export class HomeGameState implements IGameState {
     navBar.top = 0.02
     navBar.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
     navBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
-    let loginBtn = buildUserBtn()
+    if (UserManager.isEmpty()) {
+      let loginBtn = GameButton.createHeaderButton('loginButton', 'LOGIN')
+      loginBtn.onPointerClickObservable.add(() => {
+        try {
+          // log in...
+          UserManager.loginUser()
+        } catch (error: any) {
+          // ...error during log in process
+          return this._homeGUI.addControl(
+            GamePopup.showInfoPopup(
+              'WE ARE SORRY... AN ERROR OCCURED WHEN TRYING TO LOG IN YOU.\n ' +
+                error.code +
+                '\n' +
+                error.message +
+                '\n' +
+                'TRY AGAIN LATER.',
+            ),
+          )
+        }
+      })
+
+      // return loginBtn
+      navBar.addControl(loginBtn)
+    } else {
+      let youBtn = GameButton.createHeaderButton('youButton', 'YOU')
+      youBtn.onPointerClickObservable.add(() => {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'USER INFORMATIONS \n ' +
+              UserManager.getCurrentGameUser().getUid() +
+              '\n' +
+              UserManager.getCurrentGameUser().getName() +
+              '\n' +
+              UserManager.getCurrentGameUser().getEmail() +
+              '\n' +
+              UserManager.getCurrentGameUser().getPic() +
+              '\n',
+          ),
+        )
+      })
+      navBar.addControl(youBtn)
+    }
     let texBtn = GameButton.createHeaderButton('texButton', 'TEX')
     texBtn.onPointerClickObservable.add(() => {
-      if(GameUser.getUid() === '') {
-        return this._homeGUI.addControl(GamePopup.showInfoPopup(
-          'You must log in before!\n Anonymous login system will be coming soon...'
-        ))
+      if (UserManager.isEmpty()) {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'You must log in before!\n Anonymous login system will be coming soon...',
+          ),
+        )
       }
       // TODO: Game logic goes here
     })
     let tokenBtn = GameButton.createHeaderButton('tokenButton', 'TOKEN')
     tokenBtn.onPointerClickObservable.add(() => {
-      if(GameUser.getUid() === '') {
-        return this._homeGUI.addControl(GamePopup.showInfoPopup(
-          'You must log in before!\n Anonymous login system will be coming soon...'
-        ))
+      if (UserManager.isEmpty()) {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'You must log in before!\n Anonymous login system will be coming soon...',
+          ),
+        )
       }
       // TODO: Game logic goes here
     })
     let starBtn = GameButton.createHeaderButton('starButton', 'STAR')
     starBtn.onPointerClickObservable.add(() => {
-      if(GameUser.getUid() === '') {
-        return this._homeGUI.addControl(GamePopup.showInfoPopup(
-          'You must log in before!\n Anonymous login system will be coming soon...'
-        ))
+      if (UserManager.isEmpty()) {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'You must log in before!\n Anonymous login system will be coming soon...',
+          ),
+        )
       }
       // TODO: Game logic goes here
     })
     let garageBtn = GameButton.createHeaderButton('garageButton', 'GARAGE')
     garageBtn.onPointerClickObservable.add(() => {
-      if(GameUser.getUid() === '') {
-        return this._homeGUI.addControl(GamePopup.showInfoPopup(
-          'You must log in before!\n Anonymous login system will be coming soon...'
-        ))
+      if (UserManager.isEmpty()) {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'You must log in before!\n Anonymous login system will be coming soon...',
+          ),
+        )
       }
       // TODO: Game logic goes here
     })
@@ -117,22 +160,21 @@ export class HomeGameState implements IGameState {
       'SETTINGS',
     )
     settingsBtn.onPointerClickObservable.add(() => {
-      if(GameUser.getUid() === '') {
-        return this._homeGUI.addControl(GamePopup.showInfoPopup(
-          'You must log in before!\n Anonymous login system will be coming soon...'
-        ))
+      if (UserManager.isEmpty()) {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'You must log in before!\n Anonymous login system will be coming soon...',
+          ),
+        )
       }
       // TODO: Game logic goes here
     })
     let arcturusBtn = GameButton.createHeaderButton('youButton', 'ARCTURUS')
     arcturusBtn.onPointerClickObservable.add(() => {
       // TODO: User - Studio links
-      return this._homeGUI.addControl(GamePopup.showInfoPopup(
-        'GET IN TOUCH'
-      ))
+      return this._homeGUI.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
       //*window.open('https://studioarcturus.blogspot.com', '_blank')
     })
-    navBar.addControl(loginBtn)
     navBar.addControl(texBtn)
     navBar.addControl(tokenBtn)
     navBar.addControl(starBtn)
@@ -149,16 +191,16 @@ export class HomeGameState implements IGameState {
     leaderBtn.background = colors.yellow.inclusive
     leaderBtn.onPointerClickObservable.add(() => {
       // TODO: Game logic goes here
-      return this._homeGUI.addControl(GamePopup.showInfoPopup(
-        'LEADERBOARD'
-      ))
+      return this._homeGUI.addControl(GamePopup.showInfoPopup('LEADERBOARD'))
     })
     let playBtn = GameButton.createFooterButton('playButton', 'PLAY')
     playBtn.onPointerClickObservable.add(() => {
-      if(GameUser.getUid() === '') {
-        return this._homeGUI.addControl(GamePopup.showInfoPopup(
-          'You must log in before! Anonymous login system will be coming soon...'
-        ))
+      if (UserManager.isEmpty()) {
+        return this._homeGUI.addControl(
+          GamePopup.showInfoPopup(
+            'You must log in before!\n Anonymous login system will be coming soon...',
+          ),
+        )
       }
       this._leave()
       GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
@@ -191,25 +233,5 @@ export class HomeGameState implements IGameState {
 
   _leave(): void {
     GameStateManager.getAssetContainer().moveAllFromScene(this._keepAssets)
-  }
-}
-
-// Build user btn based on auth state
-function buildUserBtn() {
-  if (GameUser.getUid() != '') {
-    let youBtn = GameButton.createHeaderButton('youButton', 'YOU')
-    youBtn.onPointerClickObservable.add(() => {
-      //TODO: Show user profile details in POPUP
-      buildUserBtn()
-    })
-    return youBtn
-  } else {
-    let loginBtn = GameButton.createHeaderButton('loginButton', 'LOGIN')
-    loginBtn.onPointerClickObservable.add(() => {
-      FirebaseOAuth.login()
-      buildUserBtn()
-    })
-
-    return loginBtn
   }
 }

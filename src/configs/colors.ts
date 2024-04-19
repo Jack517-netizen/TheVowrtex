@@ -22,7 +22,7 @@ export const colors = {
 
     tennis: '#D8C508',
 
-    overlay: '#D9000000'
+    overlay: '#D9000000',
   },
 
   black: {

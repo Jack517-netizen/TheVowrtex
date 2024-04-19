@@ -20,7 +20,7 @@ export class SetupGameState implements IGameState {
     this._build()
   }
 
-  _draw(): void {
+  _listener(): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
@@ -37,14 +37,6 @@ export class SetupGameState implements IGameState {
   }
 
   _leave(): void {
-    throw new Error('Method not implemented.')
-  }
-
-  obscure(): void {
-    throw new Error('Method not implemented.')
-  }
-
-  reveal(): void {
     throw new Error('Method not implemented.')
   }
 }
