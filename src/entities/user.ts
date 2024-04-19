@@ -1,30 +1,37 @@
+import { Nullable } from "@babylonjs/core"
+import { Timestamp } from "firebase/firestore/lite"
+
 export class GameUser {
-  private static _uid: string
-  private static _uuid: string = '' // for multiplayer && public purpose
-  private static _name: string
-  private static _username: string = ''
-  private static _email: string
-  private static _pic: string // user profile photo
-  private static _tex: number = 0
-  private static _token: number = 0
-  private static _star: number = 0
+  private _uid: string
+  private _uuid: string = '' // for multiplayer && public purpose
+  private _name: string
+  private _username: string = ''
+  private _email: string
+  private _pic: string // user profile photo
+  private _tex: number = 0
+  private _token: number = 0
+  private _star: number = 0
 
   /**
-   * initialize the unique user for game session
-   * @returns GameUser user
+   * Initialize a new game user object with unique instance
+   * @param uid string
+   * @param name string
+   * @param email string
+   * @param pic string
    */
-  public static init(uid: string, name: string, email: string, pic: string) {
-    this._uid = uid
-    this._name = name
-    this._email = email
-    this._pic = pic
+  constructor(uid: Nullable<string>, name: Nullable<string>, email: Nullable<string>, pic: Nullable<string>) {
+    //* Initialize an empty or unauthenticated user
+    this._uid = uid || 'xxx'
+    this._name = name || 'xxx'
+    this._email = email || 'xxx'
+    this._pic = pic || 'xxx'
   }
 
   /**
    * get user name
    * @returns _name
    */
-  public static getName(): string {
+  public getName(): string {
     return this._name
   }
 
@@ -32,7 +39,7 @@ export class GameUser {
    * get user username
    * @returns _username
    */
-  public static getUsername(): string {
+  public getUsername(): string {
     return this._username
   }
 
@@ -40,7 +47,7 @@ export class GameUser {
    * set user username
    * @returns void
    */
-  public static setUsername(newValue: string) {
+  public setUsername(newValue: string) {
     this._username = newValue
   }
 
@@ -48,7 +55,7 @@ export class GameUser {
    * get user id
    * @returns _uid
    */
-  public static getUid(): string {
+  public getUid(): string {
     return this._uuid
   }
 
@@ -56,7 +63,7 @@ export class GameUser {
    * get user uuid
    * @returns _uuid
    */
-  public static getUuid(): string {
+  public getUuid(): string {
     return this._uid
   }
 
@@ -64,7 +71,7 @@ export class GameUser {
    * get user Tex
    * @returns _tex
    */
-  public static getTex(): number {
+  public getTex(): number {
     return this._tex
   }
 
@@ -72,7 +79,7 @@ export class GameUser {
    * set the new value for Tex
    * @returns void
    */
-  public static setTex(newValue: number) {
+  public setTex(newValue: number) {
     this._tex = newValue
   }
 
@@ -80,7 +87,7 @@ export class GameUser {
    * get user Token
    * @returns _token
    */
-  public static getToken(): number {
+  public getToken(): number {
     return this._token
   }
 
@@ -88,7 +95,7 @@ export class GameUser {
    * set the new value for Token
    * @returns void
    */
-  public static setToken(newValue: number) {
+  public setToken(newValue: number) {
     this._token = newValue
   }
 
@@ -96,7 +103,7 @@ export class GameUser {
    * get user Star
    * @returns _star
    */
-  public static getStar(): number {
+  public getStar(): number {
     return this._star
   }
 
@@ -104,7 +111,7 @@ export class GameUser {
    * set the new value for Star
    * @returns void
    */
-  public static setStar(newValue: number) {
+  public setStar(newValue: number) {
     this._star = newValue
   }
 
@@ -112,7 +119,7 @@ export class GameUser {
    * get user email
    * @returns _email
    */
-  public static getEmail(): string {
+  public getEmail(): string {
     return this._email
   }
 
@@ -120,7 +127,8 @@ export class GameUser {
    * get user pic
    * @returns _pic
    */
-  public static getPic(): string {
+  public getPic(): string {
     return this._pic
   }
+
 }

@@ -13,10 +13,10 @@ export class GameOverlay {
     _tmp.height = 100
     _tmp.background = colors.dark.competitive
     _tmp.alpha = 0.5
+    _tmp.zIndex = 1
     _tmp.isPointerBlocker = true
     _tmp.isVisible = true
 
     return _tmp
   }
-
 }

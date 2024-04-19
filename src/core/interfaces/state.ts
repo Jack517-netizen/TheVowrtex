@@ -3,9 +3,9 @@ export interface IGameState {
   sid: string
 
   /**
-   * Paint interfaces
+   * Attach listener to scene
    */
-  _draw(): void
+  _listener(): Promise<void>
 
   /**
    * Build entire scene for a given state
@@ -16,8 +16,4 @@ export interface IGameState {
    * Dispose resources for current scene
    */
   _leave(): void
-
-  obscure(): void
-
-  reveal(): void
 }
