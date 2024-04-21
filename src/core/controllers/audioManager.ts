@@ -17,6 +17,16 @@ export class AudioManager implements IAudioLayer {
   }
 
   /**
+   * Play a sound in short given time
+   * @param url the root url of the audio track
+   * @returns void
+   */
+  public static playInstantSound(url: string): void {
+    let _instantSound = new GameAudio(url, AudioType.MUSIC)
+    AudioManager._instances.push(_instantSound)
+  }
+
+  /**
    * Pause a given sound
    * @param void
    * @returns void

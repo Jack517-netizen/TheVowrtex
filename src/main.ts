@@ -4,10 +4,11 @@ import isOnline from 'is-online'
 import { registerSW } from 'virtual:pwa-register'
 import { APP } from './core/components/app.ts'
 
+/**--------ENTRY POINT---- */
+
 // Get user network state
 isOnline().then((online) => {
   if (online) {
-
     const analytics = getAnalytics(APP.getApp())
 
     // Get canvas element

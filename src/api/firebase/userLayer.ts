@@ -12,14 +12,14 @@ const userConverter = {
    */
   toFirestore: (user: GameUser) => {
     return {
-      uid: user.getUid(),
-      name: user.getName(),
-      email: user.getEmail(),
-      pic: user.getPic(),
-      tex: user.getTex(),
-      star: user.getStar(),
-      token: user.getToken(),
-      joinedDate: Date.now()
+      uid: user.uid,
+      name: user.name,
+      email: user.email,
+      pic: user.pic,
+      tex: user.tex,
+      star: user.star,
+      token: user.token,
+      joinedDate: Date.now(),
     }
   },
 
@@ -29,7 +29,7 @@ const userConverter = {
   fromFirestore: (snapshot: any, options: any) => {
     const data = snapshot.data(options)
     return new GameUser(data.uid, data.name, data.email, data.pic)
-  }
+  },
 }
 
 export class FirebaseUserLayer implements IUser {
@@ -42,9 +42,9 @@ export class FirebaseUserLayer implements IUser {
    */
   async createUser(user: GameUser): Promise<void> {
     const docRef = await setDoc(
-      doc(FirebaseUserLayer._db, "users", user.getUid()),
+      doc(FirebaseUserLayer._db, 'users', user.uid),
       userConverter.toFirestore(user),
-      { merge: true }
+      { merge: true },
     )
   }
 

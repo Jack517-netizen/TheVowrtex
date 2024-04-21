@@ -25,7 +25,7 @@ dist-ssr
 
 # Personal files
 tasks.todo
-dev-dist
+/dev-dist/
 /test-results/
 /playwright-report/
 /blob-report/

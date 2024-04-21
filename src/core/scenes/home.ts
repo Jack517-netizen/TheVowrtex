@@ -5,6 +5,7 @@ import {
   Vector3,
   Layer,
   KeepAssets,
+  FreeCamera,
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { colors } from '../../configs/colors'
@@ -15,6 +16,9 @@ import { AudioManager } from '../controllers/audioManager'
 import { SetupGameState } from './setup'
 import { GamePopup } from '../components/popup'
 import { UserManager } from '../controllers/userManager'
+import { autorun, IReactionDisposer, reaction } from 'mobx'
+import { NavBar } from '../components/navbar'
+import { FooterBar } from '../components/foobar'
 
 export class HomeGameState implements IGameState {
   private _engine: Engine
@@ -22,7 +26,9 @@ export class HomeGameState implements IGameState {
   private _homeGUI: AdvancedDynamicTexture
   private _audioManager: AudioManager
   private _keepAssets: KeepAssets
+  private _userManager: UserManager
   sid: string
+  private _navBar: NavBar
 
   constructor(engine: Engine, scene: Scene) {
     // init...
@@ -32,6 +38,7 @@ export class HomeGameState implements IGameState {
     this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     this._audioManager = new AudioManager()
     this._keepAssets = new KeepAssets()
+    this._userManager = new UserManager()
 
     // ...attach all listener (understand which affect the rebuild)
     this._listener()
@@ -41,7 +48,19 @@ export class HomeGameState implements IGameState {
   }
 
   async _listener(): Promise<void> {
-    UserManager.userStateChanged()
+    this._userManager.userStateChanged()
+    reaction(
+      () => this._userManager.isLoggedIn,
+      (flag) => {
+        if (flag) {
+          // TODO: Show a log in popup
+          console.log('user log in')
+        } else {
+          // TODO: Show a log out popup
+          console.log('user log out')
+        }
+      },
+    )
   }
 
   async _build(): Promise<void> {
@@ -49,168 +68,53 @@ export class HomeGameState implements IGameState {
 
     // --this._scene SETUP--
     this._scene.detachControl()
-    // this._this._scene.clearColor = Color4.FromHexString(colors.dark.normal)
-    let camera = new ArcRotateCamera(
-      'camera1',
-      Math.PI / 2,
-      -Math.PI / 2.5,
-      10,
-      new Vector3(0, 0, 0),
-      this._scene,
-    )
-    this._keepAssets.cameras.push(camera)
-
+    let camera = new FreeCamera('home-camera', Vector3.Zero(), this._scene)
     this._audioManager.playSound('neon-fury.ogg')
+    
     // -- GUI SETUP --
+    this._navBar = new NavBar(this._homeGUI, this._userManager)
+    
+    /*!this._stop = autorun(() => {
+      if (this._userManager._gameUser.uid !== 'xxx') {
+        navBar.getNavbarButton('loginButton')
+        .onPointerClickObservable
+        .removeCallback(loginFunction)
 
-    let navBar = new StackPanel('navigationBar')
-    navBar.isVertical = false
-    navBar.height = 0.07
-    navBar.top = 0.02
-    navBar.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
-    navBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
-    if (UserManager.getCurrentGameUser().isEmpty()) {
-      let loginBtn = GameButton.createHeaderButton('loginButton', 'LOGIN')
-      loginBtn.onPointerClickObservable.add(() => {
-        try {
-          // log in...
-          UserManager.loginUser()
-        } catch (error: any) {
-          // ...error during log in process
-          return this._homeGUI.addControl(
-            GamePopup.showInfoPopup(
-              'WE ARE SORRY... AN ERROR OCCURED WHEN TRYING TO LOG IN YOU.\n ' +
-                error.code +
-                '\n' +
-                error.message +
-                '\n' +
-                'TRY AGAIN LATER.',
-            ),
-          )
-        }
-      })
+        navBar
+          .getNavbarButton('loginButton')
+          .updateComponent('youButton', 'user.png', 'YOU', colors.dark.urban)
+        navBar.getNavbarButton('loginButton').onPointerClickObservable.add(youFunction)
+        //!
+        console.log('if')
+      } else {
+        navBar.getNavbarButton('youButton')
+        .onPointerClickObservable.removeCallback(youFunction)
+        
+        navBar
+          .getNavbarButton('youButton')
+          .updateComponent('loginButton', 'login.png', 'LOGIN', colors.red.crimson)
+        navBar.getNavbarButton('youButton')
+        .onPointerClickObservable.add(loginFunction)
+        //!
+        console.log('else')
+      }
+    })*/
 
-      // return loginBtn
-      navBar.addControl(loginBtn)
-    } else {
-      let youBtn = GameButton.createHeaderButton('youButton', 'YOU')
-      youBtn.onPointerClickObservable.add(() => {
+    let fooBar = new FooterBar(this._homeGUI)
+    fooBar.getFooterButton('playButton').onPointerClickObservable.add(() => {
+      if (this._userManager.getGameUser.uid === 'xxx') {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
-            'USER INFORMATIONS \n ' +
-              UserManager.getCurrentGameUser().getUid() +
-              '\n' +
-              UserManager.getCurrentGameUser().getName() +
-              '\n' +
-              UserManager.getCurrentGameUser().getEmail() +
-              '\n' +
-              UserManager.getCurrentGameUser().getPic() +
-              '\n',
-          ),
-        )
-      })
-      navBar.addControl(youBtn)
-    }
-    let texBtn = GameButton.createHeaderButton('texButton', 'TEX')
-    texBtn.onPointerClickObservable.add(() => {
-      if (UserManager.getCurrentGameUser().isEmpty()) {
-        return this._homeGUI.addControl(
-          GamePopup.showInfoPopup(
-            'You must log in before!\n Anonymous login system will be coming soon...',
-          ),
-        )
-      }
-      // TODO: Game logic goes here
-    })
-    let tokenBtn = GameButton.createHeaderButton('tokenButton', 'TOKEN')
-    tokenBtn.onPointerClickObservable.add(() => {
-      if (UserManager.getCurrentGameUser().isEmpty()) {
-        return this._homeGUI.addControl(
-          GamePopup.showInfoPopup(
-            'You must log in before!\n Anonymous login system will be coming soon...',
-          ),
-        )
-      }
-      // TODO: Game logic goes here
-    })
-    let starBtn = GameButton.createHeaderButton('starButton', 'STAR')
-    starBtn.onPointerClickObservable.add(() => {
-      if (UserManager.getCurrentGameUser().isEmpty()) {
-        return this._homeGUI.addControl(
-          GamePopup.showInfoPopup(
-            'You must log in before!\n Anonymous login system will be coming soon...',
-          ),
-        )
-      }
-      // TODO: Game logic goes here
-    })
-    let garageBtn = GameButton.createHeaderButton('garageButton', 'GARAGE')
-    garageBtn.onPointerClickObservable.add(() => {
-      if (UserManager.getCurrentGameUser().isEmpty()) {
-        return this._homeGUI.addControl(
-          GamePopup.showInfoPopup(
-            'You must log in before!\n Anonymous login system will be coming soon...',
-          ),
-        )
-      }
-      // TODO: Game logic goes here
-    })
-    let settingsBtn = GameButton.createHeaderButton(
-      'settingsButton',
-      'SETTINGS',
-    )
-    settingsBtn.onPointerClickObservable.add(() => {
-      if (UserManager.getCurrentGameUser().isEmpty()) {
-        return this._homeGUI.addControl(
-          GamePopup.showInfoPopup(
-            'You must log in before!\n Anonymous login system will be coming soon...',
-          ),
-        )
-      }
-      // TODO: Game logic goes here
-    })
-    let arcturusBtn = GameButton.createHeaderButton('youButton', 'ARCTURUS')
-    arcturusBtn.onPointerClickObservable.add(() => {
-      // TODO: User - Studio links
-      return this._homeGUI.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
-      //*window.open('https://studioarcturus.blogspot.com', '_blank')
-    })
-    navBar.addControl(texBtn)
-    navBar.addControl(tokenBtn)
-    navBar.addControl(starBtn)
-    navBar.addControl(garageBtn)
-    navBar.addControl(settingsBtn)
-    navBar.addControl(arcturusBtn)
-
-    let footerBar = new StackPanel('navigationBar')
-    footerBar.isVertical = false
-    footerBar.height = 0.2
-    footerBar.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
-    footerBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
-    let leaderBtn = GameButton.createFooterButton('leaderButton', 'LEADERBOARD')
-    leaderBtn.background = colors.yellow.inclusive
-    leaderBtn.onPointerClickObservable.add(() => {
-      // TODO: Game logic goes here
-      return this._homeGUI.addControl(GamePopup.showInfoPopup('LEADERBOARD'))
-    })
-    let playBtn = GameButton.createFooterButton('playButton', 'PLAY')
-    playBtn.onPointerClickObservable.add(() => {
-      if (UserManager.getCurrentGameUser().isEmpty()) {
-        return this._homeGUI.addControl(
-          GamePopup.showInfoPopup(
-            'You must log in before!\n Anonymous login system will be coming soon...',
+            'You must log in before!\n Anonymous login system coming soon...',
           ),
         )
       }
       this._leave()
       GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
-      // TODO: Game logic goes here
     })
-    footerBar.addControl(leaderBtn)
-    footerBar.addControl(playBtn)
 
-    this._homeGUI.addControl(navBar)
-    this._homeGUI.addControl(footerBar)
+    this._homeGUI.addControl(this._navBar)
+    this._homeGUI.addControl(fooBar)
 
     let layers = ['/assets/img/dome1.jpg', '/assets/img/dome3.jpg']
     let backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
@@ -232,6 +136,7 @@ export class HomeGameState implements IGameState {
   }
 
   _leave(): void {
+    this._navBar.stop()
     GameStateManager.getAssetContainer().moveAllFromScene(this._keepAssets)
   }
 }

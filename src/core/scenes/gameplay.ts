@@ -29,19 +29,9 @@ export class GameplayGameState implements IGameState {
     this._build()
   }
 
-  _draw(): void {
+  async _listener(): Promise<void> {
     // Add UI drawing logic here if needed
     console.log('Real time: Draw')
-  }
-
-  obscure(): void {
-    // Add UI obscuring logic here if needed
-    console.log('Real time: Obscuring')
-  }
-
-  reveal(): void {
-    // Add UI revealing logic here if needed
-    console.log('Real time: Revealing')
   }
 
   async _build(): Promise<void> {
@@ -51,17 +41,5 @@ export class GameplayGameState implements IGameState {
   _leave(): void {
     // Add UI leaving logic here if needed
     console.log('Real time: Leaving')
-  }
-
-  private _updateEnemies(): void {
-    // Implement enemy update logic
-  }
-
-  private _drawEnemies(): void {
-    // Implement enemy drawing logic
-  }
-
-  private _drawTerrain(): void {
-    // Implement terrain drawing logic
   }
 }
