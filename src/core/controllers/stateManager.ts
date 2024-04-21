@@ -42,7 +42,7 @@ export class GameStateManager {
    * @returns Boolean
    */
   public static canBePop(): Boolean {
-    return !this._currentStates.isEmpty()
+    return this._currentStates.size() > 1
   }
 
   /**

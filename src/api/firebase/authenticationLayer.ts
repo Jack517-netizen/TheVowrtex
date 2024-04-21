@@ -8,19 +8,19 @@ import {
   User,
 } from 'firebase/auth'
 import { APP } from '../../core/components/app'
+import { Nullable } from '@babylonjs/core'
 
 export class FirebaseAuthLayer {
-  private static _auth: Auth = getAuth(APP.getApp())
-
   /**
    * This method is a wrapper at the top for the
    * firebase login process
    */
   public static async login(): Promise<User> {
     try {
+      const auth = getAuth(APP.getApp())
       const provider = new GoogleAuthProvider()
 
-      const result = await signInWithPopup(FirebaseAuthLayer._auth, provider)
+      const result = await signInWithPopup(auth, provider)
       const credential = GoogleAuthProvider.credentialFromResult(result)
       // This gives you a Google Access Token. You can use it to access the Google API.
       const token = credential?.accessToken
@@ -49,7 +49,8 @@ export class FirebaseAuthLayer {
    * firebase logout process
    */
   public static logout(): void {
-    signOut(FirebaseAuthLayer._auth)
+    const auth = getAuth(APP.getApp())
+    signOut(auth)
       .then(() => {
         // Sign-out successful
       })
@@ -62,27 +63,23 @@ export class FirebaseAuthLayer {
   /**
    * Listener and notifier
    */
-  public static onChange(): Boolean {
-    onAuthStateChanged(FirebaseAuthLayer._auth, (user) => {
-      if (user) {
-        // User is signed in, see docs
-        console.log('user log in')
-      } else {
-        // User is signed out
-        console.log('user log out')
-      }
-    })
-    return true
-  }
+  public static onChange(): Promise<User> {
+    return new Promise((resolve) => {
+      const auth = getAuth(APP.getApp())
+      let unsubscribe: () => void
 
-  /**
-   * getCurrentUser method the current signed-in firebase user
-   * @param void
-   * @returns void
-   */
-  public static getCurrentUser(): User | null {
-    const auth = getAuth()
-    const user = auth.currentUser
-    return user
+      // Subscribe to authentication state changes
+      unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in
+          resolve(user)
+          console.log('cuurent')
+        } else {
+          // User is signed out
+          console.log('ouut')
+        }
+      })
+      return true
+    })
   }
 }

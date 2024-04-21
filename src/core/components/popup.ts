@@ -16,7 +16,7 @@ export class GamePopup {
    */
   public static showInfoPopup(msg: string): Container {
     // TRANSPARENT DARK EFFECT
-    let _overlay = GameOverlay.createDarkOverlay()
+    let _overlay = GameOverlay.createTransparentOverlay()
 
     // POPUP
     let _tmp = new StackPanel('info-stack')
@@ -68,7 +68,7 @@ export class GamePopup {
     actionFunction: Function,
     undoFunction: Function,
   ): Container {
-    let _overlay = GameOverlay.createDarkOverlay()
+    let _overlay = GameOverlay.createTransparentOverlay()
 
     // POPUP
     let _tmp = new StackPanel('actions-stack')
@@ -134,7 +134,7 @@ export class GamePopup {
    * @returns Container
    */
   public showMenuPopup(stack: StackPanel): Container {
-    let _overlay = GameOverlay.createDarkOverlay()
+    let _overlay = GameOverlay.createTransparentOverlay()
     stack.zIndex = 2
 
     //!!!!!!!!!!!!

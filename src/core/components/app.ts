@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app"
+import { initializeApp } from 'firebase/app'
 
 export class APP {
   // Your web app's Firebase configuration (For
@@ -13,24 +13,24 @@ export class APP {
     measurementId: 'G-3JPQNTSWG3',
   }
 
-	// Initialize Firebase
-	private static _app = initializeApp(APP._firebaseConfig)
+  // Initialize Firebase
+  private static _app = initializeApp(APP._firebaseConfig)
 
-	/**
-	 * getFirebaseConfig method
-	 * @param void
-	 * @returns _firebaseConfig
-	 */
-	public static getFirebaseConfig(): any{
-		return APP._firebaseConfig
-	}
+  /**
+   * getFirebaseConfig method
+   * @param void
+   * @returns _firebaseConfig
+   */
+  public static getFirebaseConfig(): any {
+    return APP._firebaseConfig
+  }
 
-	/**
-	 * getApp method
-	 * @param void
-	 * @returns _app
-	 */
-	public static getApp(): any{
-		return APP._app
-	}
+  /**
+   * getApp method
+   * @param void
+   * @returns _app
+   */
+  public static getApp(): any {
+    return APP._app
+  }
 }

@@ -1,3 +1,4 @@
+import { action, computed, flow, makeObservable, observable } from 'mobx'
 import { FirebaseAuthLayer } from '../../api/firebase/authenticationLayer'
 import { FirebaseUserLayer } from '../../api/firebase/userLayer'
 import { GameUser } from '../../entities/user'
@@ -5,22 +6,38 @@ import { IUser } from '../interfaces/user'
 
 export class UserManager implements IUser {
   private static _firebaseUserLayer: FirebaseUserLayer = new FirebaseUserLayer()
-  private static _gameUser: GameUser = new GameUser(null, null, null, null)
+  _gameUser: GameUser
 
   /**
-   * @deprecated
-   * Create a new game user (User wants to login)
-   * @param user GameUser
-   * @returns void
+   * Instanciate the _gameUser
+   * @param void
    */
-  createUser(user: GameUser): void {
-    console.log(user)
+  constructor() {
+    makeObservable(this, {
+      _gameUser: observable,
+      isLoggedIn: computed,
+      loginUser: action,
+      logoutUser: action,
+      userStateChanged: action,
+      getGameUser: computed,
+    })
+    this._gameUser = new GameUser('xxx', 'xxx', 'xxx', 'xxx')
+  }
+
+  /**
+   * isLoggedIn
+   * method check if user is authenticated or not
+   * @returns Boolean
+   */
+  public get isLoggedIn(): Boolean {
+    return this._gameUser.uid !== 'xxx'
   }
 
   /**
    * Get user data
    * @param void
-   * @returns void
+   * @returns GameUser
+   * TODO: See the return type
    */
   readUser(uid: string): void {
     //TODO: Call FirebaseUserLayer to do low level process
@@ -50,20 +67,18 @@ export class UserManager implements IUser {
    * @param void
    * @returns void
    */
-  public static async loginUser(): Promise<void> {
+  public async loginUser(): Promise<void> {
     try {
       const result = await FirebaseAuthLayer.login()
 
       // Initialize a GameUser instance with provided value by FirebaseAuth
-      UserManager._gameUser = new GameUser(
-        result.uid,
-        result.displayName || '',
-        result.email || '',
-        result.photoURL || '',
-      )
+      this._gameUser.uid = result.uid
+      this._gameUser.name = result.displayName || 'xxx'
+      this._gameUser.email = result.email || 'xxx'
+      this._gameUser.pic = result.photoURL || 'xxx'
 
       // Merge data to database
-      UserManager._firebaseUserLayer.createUser(UserManager._gameUser)
+      UserManager._firebaseUserLayer.createUser(this._gameUser)
     } catch (err) {
       throw err
     }
@@ -74,13 +89,25 @@ export class UserManager implements IUser {
    * @param void
    * @returns void
    */
-  public static logoutUser(): void {
+  public logoutUser(): void {
     try {
-      const result = FirebaseAuthLayer.logout()
-      // log-out success
+      FirebaseAuthLayer.logout()
+      this._gameUser.uid = 'xxx'
+      this._gameUser.name = 'xxx'
+      this._gameUser.email = 'xxx'
+      this._gameUser.pic = 'xxx'
     } catch (err) {
       throw err
     }
+  }
+
+  /**
+   * getGameUser returns the _gameUser field
+   * @param void
+   * @returns GameUser
+   */
+  public get getGameUser() {
+    return this._gameUser
   }
 
   /**
@@ -88,27 +115,27 @@ export class UserManager implements IUser {
    * @param void
    * @return Boolean
    */
-  public static userStateChanged(): Boolean {
-    return FirebaseAuthLayer.onChange()
+  public userStateChanged(): void {
+    FirebaseAuthLayer.onChange()
+      .then((user) => {
+        this._gameUser.uid = user.uid
+        this._gameUser.name = user.displayName || 'xxx'
+        this._gameUser.email = user.email || 'xxx'
+        this._gameUser.pic = user.photoURL || 'xxx'
+      })
+      .catch((error) => {
+        throw error
+      })
   }
 
   /**
-   * getCurrentUser returns the current logged user
-   * @param void
-   * @returns GameUser instance
+   * @deprecated
+   * !! Use instead the low level function provided by API
+   * !! Create a new game user (User wants to login)
+   * @param user GameUser
+   * @returns void
    */
-  public static getCurrentGameUser(): GameUser {
-    const result = FirebaseAuthLayer.getCurrentUser()
-    if (result !== null) {
-      UserManager._gameUser = new GameUser(
-        result.uid,
-        result.displayName || '',
-        result.email || '',
-        result.photoURL || '',
-      )
-    }
-    return UserManager._gameUser
+  createUser(user: GameUser): void {
+    alert(user + ' cannot use this function...')
   }
-
 }
-
