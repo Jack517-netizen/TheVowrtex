@@ -66,8 +66,10 @@ export class FirebaseAuthLayer {
     onAuthStateChanged(FirebaseAuthLayer._auth, (user) => {
       if (user) {
         // User is signed in, see docs
+        console.log('user log in')
       } else {
         // User is signed out
+        console.log('user log out')
       }
     })
     return true

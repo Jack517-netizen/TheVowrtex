@@ -110,34 +110,5 @@ export class UserManager implements IUser {
     return UserManager._gameUser
   }
 
-  /**
-   * isNotEmpty returns Boolean flag to know
-   * if user is authenticated or not
-   * @param void
-   * @returns Boolean
-   */
-  public static isNotEmpty(): Boolean {
-    return (
-      UserManager._gameUser.getUid() !== 'xxx' &&
-      UserManager._gameUser.getName() !== 'xxx' &&
-      UserManager._gameUser.getEmail() !== 'xxx' &&
-      UserManager._gameUser.getPic() !== 'xxx'
-    )
-  }
-
-  /**
-   * isEmpty returns Boolean flag to know
-   * if user is authenticated or not
-   * @param void
-   * @returns Boolean
-   */
-  public static isEmpty(): Boolean {
-    return (
-      UserManager._gameUser.getUid() === 'xxx' &&
-      UserManager._gameUser.getName() === 'xxx' &&
-      UserManager._gameUser.getEmail() === 'xxx' &&
-      UserManager._gameUser.getPic() === 'xxx'
-    )
-  }
 }
 
