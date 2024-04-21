@@ -131,4 +131,34 @@ export class GameUser {
     return this._pic
   }
 
+  /**
+   * isNotEmpty returns Boolean flag to know
+   * if user is authenticated or not
+   * @param void
+   * @returns Boolean
+   */
+  public isNotEmpty(): Boolean {
+    return (
+      this._uid !== 'xxx' &&
+      this._name !== 'xxx' &&
+      this._email !== 'xxx' &&
+      this._pic !== 'xxx'
+    )
+  }
+
+  /**
+   * isEmpty returns Boolean flag to know
+   * if user is authenticated or not
+   * @param void
+   * @returns Boolean
+   */
+  public isEmpty(): Boolean {
+    return (
+      this._uid === 'xxx' &&
+      this._name === 'xxx' &&
+      this._email === 'xxx' &&
+      this._pic === 'xxx'
+    )
+  }
+
 }

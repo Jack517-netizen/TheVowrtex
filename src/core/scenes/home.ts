@@ -41,7 +41,7 @@ export class HomeGameState implements IGameState {
   }
 
   async _listener(): Promise<void> {
-    if (UserManager.userStateChanged()) this._build()
+    UserManager.userStateChanged()
   }
 
   async _build(): Promise<void> {
@@ -69,7 +69,7 @@ export class HomeGameState implements IGameState {
     navBar.top = 0.02
     navBar.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
     navBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
-    if (UserManager.isEmpty()) {
+    if (UserManager.getCurrentGameUser().isEmpty()) {
       let loginBtn = GameButton.createHeaderButton('loginButton', 'LOGIN')
       loginBtn.onPointerClickObservable.add(() => {
         try {
@@ -113,7 +113,7 @@ export class HomeGameState implements IGameState {
     }
     let texBtn = GameButton.createHeaderButton('texButton', 'TEX')
     texBtn.onPointerClickObservable.add(() => {
-      if (UserManager.isEmpty()) {
+      if (UserManager.getCurrentGameUser().isEmpty()) {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
             'You must log in before!\n Anonymous login system will be coming soon...',
@@ -124,7 +124,7 @@ export class HomeGameState implements IGameState {
     })
     let tokenBtn = GameButton.createHeaderButton('tokenButton', 'TOKEN')
     tokenBtn.onPointerClickObservable.add(() => {
-      if (UserManager.isEmpty()) {
+      if (UserManager.getCurrentGameUser().isEmpty()) {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
             'You must log in before!\n Anonymous login system will be coming soon...',
@@ -135,7 +135,7 @@ export class HomeGameState implements IGameState {
     })
     let starBtn = GameButton.createHeaderButton('starButton', 'STAR')
     starBtn.onPointerClickObservable.add(() => {
-      if (UserManager.isEmpty()) {
+      if (UserManager.getCurrentGameUser().isEmpty()) {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
             'You must log in before!\n Anonymous login system will be coming soon...',
@@ -146,7 +146,7 @@ export class HomeGameState implements IGameState {
     })
     let garageBtn = GameButton.createHeaderButton('garageButton', 'GARAGE')
     garageBtn.onPointerClickObservable.add(() => {
-      if (UserManager.isEmpty()) {
+      if (UserManager.getCurrentGameUser().isEmpty()) {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
             'You must log in before!\n Anonymous login system will be coming soon...',
@@ -160,7 +160,7 @@ export class HomeGameState implements IGameState {
       'SETTINGS',
     )
     settingsBtn.onPointerClickObservable.add(() => {
-      if (UserManager.isEmpty()) {
+      if (UserManager.getCurrentGameUser().isEmpty()) {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
             'You must log in before!\n Anonymous login system will be coming soon...',
@@ -195,7 +195,7 @@ export class HomeGameState implements IGameState {
     })
     let playBtn = GameButton.createFooterButton('playButton', 'PLAY')
     playBtn.onPointerClickObservable.add(() => {
-      if (UserManager.isEmpty()) {
+      if (UserManager.getCurrentGameUser().isEmpty()) {
         return this._homeGUI.addControl(
           GamePopup.showInfoPopup(
             'You must log in before!\n Anonymous login system will be coming soon...',
