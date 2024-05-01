@@ -10,8 +10,6 @@ import {
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { GameStateManager } from '../controllers/stateManager'
-import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
-import { GameButton } from '../components/buttons'
 import { colors } from '../../configs/colors'
 
 export class GameplayGameState implements IGameState {
@@ -24,9 +22,6 @@ export class GameplayGameState implements IGameState {
     this.sid = 'GamePlay'
     this._engine = engine
     this._scene = scene
-
-    // ...build
-    this._build()
   }
 
   async _listener(): Promise<void> {
@@ -35,7 +30,17 @@ export class GameplayGameState implements IGameState {
   }
 
   async _build(): Promise<void> {
-    GameStateManager.getAssetContainer().addAllToScene()
+    this._engine.displayLoadingUI()
+
+    // --this._scene SETUP... --
+    this._scene.detachControl()
+    this._scene.clearColor = Color4.FromHexString(colors.dark.competitive)
+    console.log('GAMEPLAY SCENE')
+
+    // --this._scene FINISHED LOADING--
+    await  this._scene.whenReadyAsync()
+    this._scene.attachControl()
+    this._engine.hideLoadingUI()
   }
 
   _leave(): void {

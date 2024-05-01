@@ -57,6 +57,39 @@ export class GamePopup {
   }
 
   /**
+   * showMenu show a custom menu instance
+   * @param stackPanel the custom menu
+   * @returns Container
+   */
+  public static showMenu(stackPanel: StackPanel): Container {
+    // TRANSPARENT DARK EFFECT
+    let _overlay = GameOverlay.createTransparentOverlay()
+
+    // OK button action
+    let _okBtn = Button.CreateSimpleButton('ok-btn', 'OK')
+    _okBtn.width = 0.5
+    _okBtn.onPointerEnterObservable.add(() => {
+      _okBtn.background = colors.red.crimson
+    })
+    _okBtn.height = '50px'
+    _okBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
+    _okBtn.top = stackPanel.width
+    _okBtn.paddingRight = '10px'
+    _okBtn.paddingTop = '10px'
+    _okBtn.background = colors.dark.overlay
+    _okBtn.color = colors.white.normal
+    _okBtn.onPointerClickObservable.add(() => {
+      _overlay.isVisible = false
+      _overlay.dispose()
+      stackPanel.isVisible = false
+      stackPanel.dispose()
+    })
+    stackPanel.addControl(_okBtn)
+
+    return _overlay.addControl(stackPanel)
+  }
+
+  /**
    * showInfoPopup create a custom popup
    * @param msg the content of message
    * @returns Container
@@ -128,17 +161,4 @@ export class GamePopup {
     return _overlay.addControl(_tmp)
   }
 
-  /**
-   * showMenuPopup create in-scene menu popup
-   * @param stack StackPanel
-   * @returns Container
-   */
-  public showMenuPopup(stack: StackPanel): Container {
-    let _overlay = GameOverlay.createTransparentOverlay()
-    stack.zIndex = 2
-
-    //!!!!!!!!!!!!
-
-    return _overlay.addControl(stack)
-  }
 }

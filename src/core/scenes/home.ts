@@ -1,5 +1,4 @@
 import {
-  ArcRotateCamera,
   Engine,
   Scene,
   Vector3,
@@ -8,15 +7,13 @@ import {
   FreeCamera,
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
-import { colors } from '../../configs/colors'
 import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
 import { GameStateManager } from '../controllers/stateManager'
-import { GameButton } from '../components/buttons'
 import { AudioManager } from '../controllers/audioManager'
-import { SetupGameState } from './setup'
+import { SetupGameState } from './gameMode'
 import { GamePopup } from '../components/popup'
 import { UserManager } from '../controllers/userManager'
-import { autorun, IReactionDisposer, reaction } from 'mobx'
+import { reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
 import { FooterBar } from '../components/foobar'
 
@@ -25,7 +22,6 @@ export class HomeGameState implements IGameState {
   private _scene: Scene
   private _homeGUI: AdvancedDynamicTexture
   private _audioManager: AudioManager
-  private _keepAssets: KeepAssets
   private _userManager: UserManager
   sid: string
   private _navBar: NavBar
@@ -37,14 +33,11 @@ export class HomeGameState implements IGameState {
     this._scene = scene
     this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     this._audioManager = new AudioManager()
-    this._keepAssets = new KeepAssets()
     this._userManager = new UserManager()
 
     // ...attach all listener (understand which affect the rebuild)
+    this._audioManager.playSound('neon-fury.ogg')
     this._listener()
-
-    // ...build
-    this._build()
   }
 
   async _listener(): Promise<void> {
@@ -67,38 +60,8 @@ export class HomeGameState implements IGameState {
     this._engine.displayLoadingUI()
 
     // --this._scene SETUP--
-    this._scene.detachControl()
     let camera = new FreeCamera('home-camera', Vector3.Zero(), this._scene)
-    this._audioManager.playSound('neon-fury.ogg')
-    
-    // -- GUI SETUP --
     this._navBar = new NavBar(this._homeGUI, this._userManager)
-    
-    /*!this._stop = autorun(() => {
-      if (this._userManager._gameUser.uid !== 'xxx') {
-        navBar.getNavbarButton('loginButton')
-        .onPointerClickObservable
-        .removeCallback(loginFunction)
-
-        navBar
-          .getNavbarButton('loginButton')
-          .updateComponent('youButton', 'user.png', 'YOU', colors.dark.urban)
-        navBar.getNavbarButton('loginButton').onPointerClickObservable.add(youFunction)
-        //!
-        console.log('if')
-      } else {
-        navBar.getNavbarButton('youButton')
-        .onPointerClickObservable.removeCallback(youFunction)
-        
-        navBar
-          .getNavbarButton('youButton')
-          .updateComponent('loginButton', 'login.png', 'LOGIN', colors.red.crimson)
-        navBar.getNavbarButton('youButton')
-        .onPointerClickObservable.add(loginFunction)
-        //!
-        console.log('else')
-      }
-    })*/
 
     let fooBar = new FooterBar(this._homeGUI)
     fooBar.getFooterButton('playButton').onPointerClickObservable.add(() => {
@@ -108,9 +71,10 @@ export class HomeGameState implements IGameState {
             'You must log in before!\n Anonymous login system coming soon...',
           ),
         )
+      } else {
+        this._leave()
+        GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
       }
-      this._leave()
-      GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
     })
 
     this._homeGUI.addControl(this._navBar)
@@ -130,13 +94,12 @@ export class HomeGameState implements IGameState {
     }, 5500)
 
     // --this._scene FINISHED LOADING--
-    await this._scene.whenReadyAsync()
+    await  this._scene.whenReadyAsync()
     this._scene.attachControl()
     this._engine.hideLoadingUI()
   }
 
   _leave(): void {
     this._navBar.stop()
-    GameStateManager.getAssetContainer().moveAllFromScene(this._keepAssets)
   }
 }

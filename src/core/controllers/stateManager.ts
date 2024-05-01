@@ -1,24 +1,27 @@
 import { Stack } from './../../utils/stack'
 import { IGameState } from './../interfaces/state'
 import { HomeGameState } from '../scenes/home'
-import { AssetContainer, Engine, Scene } from '@babylonjs/core'
+import { Engine, Scene } from '@babylonjs/core'
 
 export class GameStateManager {
-  private static _engine: Engine
-  private static _scene: Scene
-  private static _assetContainer: AssetContainer
   private static _currentStates: Stack<IGameState> = new Stack()
 
   /**
    * Initialize the game state manager
    * @returns void
    */
-  public static init(engine: Engine, scene: Scene): void {
-    this._engine = engine
-    this._scene = scene
+  public static async initGame(engine: Engine, scene: Scene): Promise<void> {
+    // Get home view instance
+    this.pushState(new HomeGameState(engine, scene))
+  }
 
-    this._assetContainer = new AssetContainer(this._scene)
-    this.pushState(new HomeGameState(this._engine, this._scene))
+  /**
+   * logAllStates print all states in stack
+   * @param void
+   * @returns void
+   */
+  public static logAllStates() {
+    console.log(this._currentStates)
   }
 
   /**
@@ -28,15 +31,7 @@ export class GameStateManager {
   public static async getCurrentState(): Promise<IGameState> {
     return this._currentStates.peek()
   }
-
-  /**
-   * Get the current AssetContainer for the game
-   * @returns The global assets container
-   */
-  public static getAssetContainer(): AssetContainer {
-    return this._assetContainer
-  }
-
+  
   /**
    * returns true if the current state can be popped
    * @returns Boolean

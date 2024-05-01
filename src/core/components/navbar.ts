@@ -21,13 +21,13 @@ export class NavBar extends StackPanel {
     this.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
     //TODO: Build dynamic btn
-    const switchBtn = this.buildSwitchComponent(userManager, gui)
-    const texBtn = this.buildTexComponent(userManager, gui)
-    const tokenBtn = this.buildTokenComponent(userManager, gui)
-    const starBtn = this.buildStarComponent(userManager, gui)
+    
+    let switchBtn = this.buildSwitchComponent(userManager, gui)
+    let texBtn = this.buildTexComponent(userManager, gui)
+    let tokenBtn = this.buildTokenComponent(userManager, gui)
+    let starBtn = this.buildStarComponent(userManager, gui)
     const garageBtn = this.buildGarageComponent(userManager, gui)
     const settingsBtn = this.buildSettingsComponent(userManager, gui)
-
     const arcturusBtn = this.buildArcturusBtn(gui)
 
     this.addControl(switchBtn)
@@ -43,16 +43,16 @@ export class NavBar extends StackPanel {
     userManager: UserManager,
     gui: AdvancedDynamicTexture,
   ): NavbarButton {
-    let _toggleBtn: NavbarButton = new NavbarButton()
+    let _toggleBtn: NavbarButton = new NavbarButton('loginButton')
     this._stop = autorun(() => {
       if(userManager.getGameUser.uid != 'xxx') {
-        _toggleBtn = NavbarButton.createNavbarButton('youButton', 
+        _toggleBtn.updateComponent('youButton', 
         'user.png', 'YOU', colors.violet.rainbow, () => {
-          gui.addControl(new YouMenu(userManager))
+          gui.addControl(GamePopup.showMenu(new YouMenu(userManager)))
         })
         return _toggleBtn
       } else {
-        _toggleBtn = NavbarButton.createNavbarButton('loginButton',
+        _toggleBtn.updateComponent('loginButton',
         'login.png', 'LOGIN', colors.red.crimson, () => {
           try {
             // log in...
@@ -86,7 +86,7 @@ export class NavBar extends StackPanel {
       colors.dark.competitive,
       () => {
         // TODO: User - Studio links
-        return gui.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
+        gui.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
       }
     )
     return arcturusBtn
@@ -103,7 +103,7 @@ export class NavBar extends StackPanel {
       undefined,
       () => {
         if (userManager.getGameUser.uid === 'xxx') {
-          return gui.addControl(
+          gui.addControl(
             GamePopup.showInfoPopup(
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
@@ -126,7 +126,7 @@ export class NavBar extends StackPanel {
       undefined,
       () => {
         if (userManager.getGameUser.uid === 'xxx') {
-          return gui.addControl(
+          gui.addControl(
             GamePopup.showInfoPopup(
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
@@ -149,7 +149,7 @@ export class NavBar extends StackPanel {
       undefined,
       () => {
         if (userManager.getGameUser.uid === 'xxx') {
-          return gui.addControl(
+          gui.addControl(
             GamePopup.showInfoPopup(
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
@@ -172,7 +172,7 @@ export class NavBar extends StackPanel {
       undefined,
       () => {
         if (userManager.getGameUser.uid === 'xxx') {
-          return gui.addControl(
+          gui.addControl(
             GamePopup.showInfoPopup(
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
@@ -217,7 +217,7 @@ export class NavBar extends StackPanel {
     if (_tmp !== null && _tmp instanceof NavbarButton) {
       return _tmp
     }
-    return NavbarButton.createNavbarButton('undefined', 'undefined', 'undefined', 'undefined')
+    return NavbarButton.createNavbarButton('undefined', 'undefined', 'undefined', 'undefined', () => {})
   }
 
   /**

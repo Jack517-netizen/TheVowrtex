@@ -19,7 +19,7 @@ export class NavbarButton extends Button implements IButton {
     src: string,
     content: string,
     customColor: string | undefined | void,
-    actionFn: Function | undefined | void,
+    actionFn: Function,
   ): NavbarButton {
     let _navBtn = Button.CreateImageButton(
       id,
@@ -42,11 +42,9 @@ export class NavbarButton extends Button implements IButton {
     })
 
     // attach defined action process
-    if (actionFn !== undefined) {
-      _navBtn.onPointerClickObservable.add(() => {
-        actionFn()
-      })
-    }
+    _navBtn.onPointerClickObservable.add(() => {
+      actionFn()
+    })
 
     return _navBtn as NavbarButton
   }
@@ -58,10 +56,21 @@ export class NavbarButton extends Button implements IButton {
    * @param content string
    * @param urban string
    */
-  public updateComponent(id: string, src: string, content: string, color: string) {
+  public updateComponent(id: string, src: string, content: string, color: string, actionFn: Function) {
+    this.name = id
+    this.width = screen.width / 6.9 + 'px'//'14.20%'
+    this.height = '65px'
+    this.thickness = 0
+    this.paddingRight = '5px'
+    this.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+    this.color = colors.white.normal
     if(this.image) this.image.source = '/assets/icons/' + src
     if(this.textBlock) this.textBlock.text = content
     this.background = color
-    this.name = id
+
+    this.onPointerClickObservable.clear()
+    this.onPointerClickObservable.add(() => {
+      actionFn()
+    })
   }
 }

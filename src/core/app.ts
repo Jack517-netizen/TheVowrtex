@@ -13,16 +13,16 @@ export class Game {
     this._scene = new Scene(this._engine)
 
     // Provide core references(Engine, Scene) to children
-    GameStateManager.init(this._engine, this._scene)
+    GameStateManager.initGame(this._engine, this._scene)
 
     // Load inspector layer
     this._loadInspector()
 
     // Get status/update at top of app
-    this._listenning()
+    this._listener()
   }
 
-  private _listenning() {
+  private _listener() {
     // Game app gained focus
     window.addEventListener('focus', () => {
       AudioManager.resumeAllSongs()
@@ -34,6 +34,7 @@ export class Game {
     })
   }
 
+  // Load debug tools
   private _loadInspector() {
     window.addEventListener('keydown', (evt) => {
       if (evt.ctrlKey && evt.key === 'i') {

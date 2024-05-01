@@ -2,6 +2,7 @@ import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
 import { FooterButton } from './fooButton'
 import { colors } from '../../configs/colors'
 import { GamePopup } from './popup'
+import { LeaderBoardMenu } from '../menus/leaderboardMenu'
 
 export class FooterBar extends StackPanel {
   /**
@@ -34,7 +35,7 @@ export class FooterBar extends StackPanel {
       'LEADERBOARD',
       colors.yellow.inclusive,
       () => {
-        gui.addControl(GamePopup.showInfoPopup('LEADERBOARD'))
+        gui.addControl(GamePopup.showMenu(new LeaderBoardMenu()))
       })
     return leaderBtn
   }
