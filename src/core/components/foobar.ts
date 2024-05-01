@@ -25,7 +25,7 @@ export class FooterBar extends StackPanel {
   }
 
   private buildPlayComponent(_gui: AdvancedDynamicTexture) {
-    return FooterButton.createFooterButton('playButton', 'play.png', 'PLAY')
+    return FooterButton.createFooterButton('playButton', 'play.png', 'PLAY', undefined, () => {})
   }
 
   private buildLeaderComponent(gui: AdvancedDynamicTexture) {
@@ -46,9 +46,9 @@ export class FooterBar extends StackPanel {
    */
   public getFooterButton(id: string): FooterButton {
     const _tmp = this.getChildByName(id)
-    if (_tmp !== null && _tmp instanceof FooterButton) {
-      return _tmp
+    if (_tmp !== null) {
+      return _tmp as FooterButton
     }
-    return FooterButton.createFooterButton('undefined', 'undefined', 'undefined', 'undefined')
+    return FooterButton.createFooterButton('undefined', 'undefined', 'undefined', 'undefined', () => {})
   }
 }

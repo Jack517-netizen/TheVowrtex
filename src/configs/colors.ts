@@ -1,6 +1,8 @@
 export const colors = {
   white: {
     normal: '#FFFFFF',
+
+    background: '#F1FFF1',
   },
 
   gray: {

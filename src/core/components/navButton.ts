@@ -4,6 +4,11 @@ import { AudioManager } from '../controllers/audioManager'
 import { IButton } from '../interfaces/button'
 
 export class NavbarButton extends Button implements IButton {
+
+  constructor(id: string, src: string, content: string, color: string, actionFn: Function) {
+    super(id)
+    NavbarButton.createNavbarButton(id, src, content, color, actionFn)
+  }
   
   /**
    * 
@@ -56,20 +61,20 @@ export class NavbarButton extends Button implements IButton {
    * @param content string
    * @param urban string
    */
-  public updateComponent(id: string, src: string, content: string, color: string, actionFn: Function) {
-    this.name = id
-    this.width = screen.width / 6.9 + 'px'//'14.20%'
-    this.height = '65px'
-    this.thickness = 0
-    this.paddingRight = '5px'
-    this.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
-    this.color = colors.white.normal
-    if(this.image) this.image.source = '/assets/icons/' + src
-    if(this.textBlock) this.textBlock.text = content
-    this.background = color
+  public static updateComponent(thing: NavbarButton, id: string, src: string, content: string, color: string, actionFn: Function) {
+    thing.name = id
+    thing.width = screen.width / 6.9 + 'px'//'14.20%'
+    thing.height = '65px'
+    thing.thickness = 0
+    thing.paddingRight = '5px'
+    thing.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+    thing.color = colors.white.normal
+    if(thing.image) thing.image.source = '/assets/icons/' + src
+    if(thing.textBlock) thing.textBlock.text = content
+    thing.background = color
 
-    this.onPointerClickObservable.clear()
-    this.onPointerClickObservable.add(() => {
+    thing.onPointerClickObservable.clear()
+    thing.onPointerClickObservable.add(() => {
       actionFn()
     })
   }

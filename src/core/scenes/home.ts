@@ -3,7 +3,6 @@ import {
   Scene,
   Vector3,
   Layer,
-  KeepAssets,
   FreeCamera,
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
@@ -25,6 +24,7 @@ export class HomeGameState implements IGameState {
   private _userManager: UserManager
   sid: string
   private _navBar: NavBar
+  private _backgroundLayer: Layer
 
   constructor(engine: Engine, scene: Scene) {
     // init...
@@ -36,8 +36,10 @@ export class HomeGameState implements IGameState {
     this._userManager = new UserManager()
 
     // ...attach all listener (understand which affect the rebuild)
-    this._audioManager.playSound('neon-fury.ogg')
     this._listener()
+
+    // ... build ui
+    this._build()
   }
 
   async _listener(): Promise<void> {
@@ -62,6 +64,7 @@ export class HomeGameState implements IGameState {
     // --this._scene SETUP--
     let camera = new FreeCamera('home-camera', Vector3.Zero(), this._scene)
     this._navBar = new NavBar(this._homeGUI, this._userManager)
+    this._audioManager.playSound('neon-fury.ogg')
 
     let fooBar = new FooterBar(this._homeGUI)
     fooBar.getFooterButton('playButton').onPointerClickObservable.add(() => {
@@ -74,24 +77,13 @@ export class HomeGameState implements IGameState {
       } else {
         this._leave()
         GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
+        GameStateManager.logAllStates()
       }
     })
 
     this._homeGUI.addControl(this._navBar)
     this._homeGUI.addControl(fooBar)
-
-    let layers = ['/assets/img/dome1.jpg', '/assets/img/dome3.jpg']
-    let backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
-
-    let i = 0
-    setInterval(() => {
-      if (i % 2 == 0) {
-        backgroundLayer = new Layer('homeLayer', layers[0], this._scene, true)
-      } else if (i % 2 == 1) {
-        backgroundLayer = new Layer('homeLayer', layers[1], this._scene, true)
-      }
-      i++
-    }, 5500)
+    this._backgroundLayer = new Layer('homeLayer', '/assets/img/dome1.jpg', this._scene, true)
 
     // --this._scene FINISHED LOADING--
     await  this._scene.whenReadyAsync()
@@ -101,5 +93,9 @@ export class HomeGameState implements IGameState {
 
   _leave(): void {
     this._navBar.stop()
+    this._homeGUI.dispose()
+    this._backgroundLayer.isEnabled = false
+    this._backgroundLayer.dispose()
+    AudioManager.disposeAllSongs()
   }
 }

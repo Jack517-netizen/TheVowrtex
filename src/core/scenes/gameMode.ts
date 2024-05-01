@@ -23,32 +23,36 @@ export class SetupGameState implements IGameState {
     this.sid = 'Setup'
     this._engine = engine
     this._scene = scene
+    this._gameModeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     this._audioManager = new AudioManager()
     userManager !== undefined ? this._userManager = userManager : this._userManager = new UserManager()
     
+    // ...attach all listener (understand which affect the rebuild)
+    this._listener()
 
     // ...build
     this._build()
   }
 
-  _listener(): Promise<void> {
-    throw new Error('Method not implemented.')
+  _listener(): void {
+    this._userManager.userStateChanged()
+    console.log('Method not implemented.')
   }
 
   async _build(): Promise<void> {
     this._engine.displayLoadingUI()
 
-    // -- this._scene SETUP... --
-    let scene = new Scene(this._engine)
-    scene.detachControl()
-    scene.clearColor = Color4.FromHexString(colors.dark.competitive)
-    let camera = new FreeCamera('home-camera', Vector3.Zero(), this._scene)
     this._audioManager.playSound('race-phonk.ogg')
+
+    // -- this._scene SETUP... --
+    this._scene.detachControl()
+    this._scene.clearColor = Color4.FromHexString(colors.gray.teal)
+    let camera = new FreeCamera('home-camera', Vector3.Zero(), this._scene)
     
     this._navBar = new NavBar(this._gameModeGUI, this._userManager)
-
-
     this._gameModeGUI.addControl(this._navBar)
+
+    
 
     // -- this._scene FINISHED LOADING --
     await this._scene.whenReadyAsync()
@@ -57,6 +61,6 @@ export class SetupGameState implements IGameState {
   }
 
   _leave(): void {
-    throw new Error('Method not implemented.')
+    this._navBar.stop()
   }
 }

@@ -7,7 +7,7 @@ export interface IGameState {
   /**
    * Attach listener to scene
    */
-  _listener(): Promise<void>
+  _listener(): void
 
   /**
    * Build entire scene for a given state

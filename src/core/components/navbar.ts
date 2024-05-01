@@ -26,9 +26,9 @@ export class NavBar extends StackPanel {
     let texBtn = this.buildTexComponent(userManager, gui)
     let tokenBtn = this.buildTokenComponent(userManager, gui)
     let starBtn = this.buildStarComponent(userManager, gui)
-    const garageBtn = this.buildGarageComponent(userManager, gui)
-    const settingsBtn = this.buildSettingsComponent(userManager, gui)
-    const arcturusBtn = this.buildArcturusBtn(gui)
+    let garageBtn = this.buildGarageComponent(userManager, gui)
+    let settingsBtn = this.buildSettingsComponent(userManager, gui)
+    let arcturusBtn = this.buildArcturusBtn(gui)
 
     this.addControl(switchBtn)
     this.addControl(texBtn)
@@ -43,16 +43,21 @@ export class NavBar extends StackPanel {
     userManager: UserManager,
     gui: AdvancedDynamicTexture,
   ): NavbarButton {
-    let _toggleBtn: NavbarButton = new NavbarButton('loginButton')
+    const toggleBtn = NavbarButton.createNavbarButton(
+      'loginButton',
+      'login.png',
+      'LOGIN',
+      colors.red.crimson,
+      () => { })
     this._stop = autorun(() => {
       if(userManager.getGameUser.uid != 'xxx') {
-        _toggleBtn.updateComponent('youButton', 
+        NavbarButton.updateComponent(toggleBtn, 'youButton', 
         'user.png', 'YOU', colors.violet.rainbow, () => {
           gui.addControl(GamePopup.showMenu(new YouMenu(userManager)))
         })
-        return _toggleBtn
+        return toggleBtn
       } else {
-        _toggleBtn.updateComponent('loginButton',
+        NavbarButton.updateComponent(toggleBtn, 'loginButton',
         'login.png', 'LOGIN', colors.red.crimson, () => {
           try {
             // log in...
@@ -75,7 +80,7 @@ export class NavBar extends StackPanel {
       }
     })
 
-    return _toggleBtn
+    return toggleBtn
   }
 
   private buildArcturusBtn(gui: AdvancedDynamicTexture) {
@@ -83,9 +88,8 @@ export class NavBar extends StackPanel {
       'arcturusButton',
       'arcturus.png',
       'ARCTURUS',
-      colors.dark.competitive,
+      colors.dark.normal,
       () => {
-        // TODO: User - Studio links
         gui.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
       }
     )
@@ -108,8 +112,13 @@ export class NavBar extends StackPanel {
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
           )
+        } else {
+          gui.addControl(
+            GamePopup.showInfoPopup(
+              'SETTINGS. \n',
+            ),
+          )
         }
-        // TODO: Game logic goes here
       }
     )
     return settingsBtn
@@ -131,8 +140,13 @@ export class NavBar extends StackPanel {
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
           )
+        } else {
+          gui.addControl(
+            GamePopup.showInfoPopup(
+              'GARAGE. \n ',
+            ),
+          )
         }
-        // TODO: Game logic goes here
       }
     )
     return garageBtn

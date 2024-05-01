@@ -19,7 +19,7 @@ export class FooterButton extends Button implements IButton {
     src: string,
     content: string,
     customColor: string | undefined | void,
-    actionFn: Function | undefined | void,
+    actionFn: Function,
   ): FooterButton {
     let _footerBtn = Button.CreateImageButton(
       id,
@@ -44,11 +44,9 @@ export class FooterButton extends Button implements IButton {
     })
 
     // attach defined action process
-    if (actionFn !== undefined) {
-      _footerBtn.onPointerClickObservable.add(() => {
-        actionFn()
-      })
-    }
+    _footerBtn.onPointerClickObservable.add(() => {
+      actionFn()
+    })
 
     return _footerBtn as FooterButton
   }
