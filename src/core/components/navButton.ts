@@ -54,6 +54,62 @@ export class NavbarButton extends Button implements IButton {
     return _navBtn as NavbarButton
   }
 
+  public static createNavbarButtonOnlyWithText(id: string, content: string): NavbarButton {
+    let _navBtn = Button.CreateSimpleButton(
+      id,
+      content
+    )
+
+    _navBtn.width = screen.width / 6.9 + 'px'//'14.20%'
+    _navBtn.height = '65px'
+    if(_navBtn.image) _navBtn.image.paddingLeft = '5px'
+    _navBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+    _navBtn.color = colors.dark.competitive
+    _navBtn.thickness = 0
+    _navBtn.paddingRight = '5px'
+    _navBtn.background = colors.white.normal
+    _navBtn.isEnabled = false
+
+    return _navBtn as NavbarButton
+  }
+
+  /**
+   * createNavbarButtonOnlyWithImage create a button without label
+   * @param id string
+   * @param src string
+   * @param color string
+   * @param actionFn Function
+   * @returns NavbarButton
+   */
+  public static createNavbarButtonOnlyWithImage(id: string, src: string, actionFn: Function): NavbarButton {
+    let _navBtn = Button.CreateImageOnlyButton(
+      id,
+      '/assets/icons/' + src,
+    )
+
+    if(_navBtn.image !== undefined && _navBtn.image !== null) _navBtn.image.width = '60%'
+    if(_navBtn.image !== undefined && _navBtn.image !== null) _navBtn.image.height = '50%'
+    if(_navBtn.image !== undefined && _navBtn.image !== null) _navBtn.image.paddingLeft = '40%'
+    _navBtn.width = screen.width / 6.9 + 'px'//'14.20%'
+    _navBtn.height = '65px'
+    _navBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+    _navBtn.thickness = 0
+    _navBtn.paddingRight = '5px'
+    _navBtn.background = colors.red.surf
+
+    // attach sound sfx
+    _navBtn.onPointerClickObservable.add(() => {
+      AudioManager.playInstantSound('back-ui.mp3')
+    })
+
+    // attach defined action process
+    _navBtn.onPointerClickObservable.add(() => {
+      actionFn()
+    })
+
+    return _navBtn as NavbarButton
+  }
+
   /**
    * Update component
    * @param id string

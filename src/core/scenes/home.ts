@@ -4,6 +4,7 @@ import {
   Vector3,
   Layer,
   FreeCamera,
+  KeepAssets,
 } from '@babylonjs/core'
 import { IGameState } from '../interfaces/state'
 import { AdvancedDynamicTexture, Control, StackPanel } from '@babylonjs/gui'
@@ -29,8 +30,8 @@ export class HomeGameState implements IGameState {
   constructor(engine: Engine, scene: Scene) {
     // init...
     this.sid = 'Home'
-    this._engine = engine
-    this._scene = scene
+    if (engine !== undefined) this._engine = engine
+    if (scene !== undefined) this._scene = scene
     this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     this._audioManager = new AudioManager()
     this._userManager = new UserManager()
@@ -62,8 +63,9 @@ export class HomeGameState implements IGameState {
     this._engine.displayLoadingUI()
 
     // --this._scene SETUP--
-    let camera = new FreeCamera('home-camera', Vector3.Zero(), this._scene)
+    let camera = new FreeCamera('homeCamera', Vector3.Zero(), this._scene)
     this._navBar = new NavBar(this._homeGUI, this._userManager)
+    this._homeGUI.addControl(this._navBar)
     this._audioManager.playSound('neon-fury.ogg')
 
     let fooBar = new FooterBar(this._homeGUI)
@@ -81,9 +83,8 @@ export class HomeGameState implements IGameState {
       }
     })
 
-    this._homeGUI.addControl(this._navBar)
-    this._homeGUI.addControl(fooBar)
     this._backgroundLayer = new Layer('homeLayer', '/assets/img/dome1.jpg', this._scene, true)
+    this._homeGUI.addControl(fooBar)
 
     // --this._scene FINISHED LOADING--
     await  this._scene.whenReadyAsync()

@@ -1,10 +1,10 @@
 import { Stack } from './../../utils/stack'
 import { IGameState } from './../interfaces/state'
 import { HomeGameState } from '../scenes/home'
-import { Engine, Scene } from '@babylonjs/core'
+import { AssetContainer, Engine, Scene } from '@babylonjs/core'
 
 export class GameStateManager {
-  private static _currentStates: Stack<IGameState> = new Stack()
+  private static _states: Stack<IGameState> = new Stack()
 
   /**
    * Initialize the game state manager
@@ -21,7 +21,7 @@ export class GameStateManager {
    * @returns void
    */
   public static logAllStates() {
-    console.log(this._currentStates)
+    console.log(this._states)
   }
 
   /**
@@ -29,23 +29,34 @@ export class GameStateManager {
    * @returns The current state
    */
   public static async getCurrentState(): Promise<IGameState> {
-    return this._currentStates.peek()
+    return this._states.peek()
   }
   
   /**
    * returns true if the current state can be popped
    * @returns Boolean
+   * ! Why Greater than 0 and not 1 ???
    */
   public static canBePop(): Boolean {
-    return this._currentStates.size() > 1
+    return GameStateManager._states.size() > 0
   }
 
   /**
    * Pop the current state from the stack and call its leaving method
    * @returns The popped state, or undefined if there's no previous state
    */
-  public static popState() {
-    this._currentStates.pop()
+  public static popState(state: IGameState) {
+    this._states.pop()
+    this._states[this._states.size() - 1] = state
+  }
+
+  /**
+   * getAllStates return all game states contains in Stack
+   * @param void
+   * @returns void
+   */
+  public static getAllStates(): Stack<IGameState> {
+    return this._states
   }
 
   /**
@@ -53,7 +64,7 @@ export class GameStateManager {
    * @param nextState The state to push
    */
   public static pushState(nextState: IGameState) {
-    this._currentStates.push(nextState)
+    this._states.push(nextState)
   }
 
   /**
@@ -62,20 +73,7 @@ export class GameStateManager {
    * @returns void
    */
   public static clearState(): void {
-    const currentState = this._currentStates.clear()
+    this._states.clear()
   }
 
-  /**
-   * Show another game state is stacked on top of this one
-   */
-  public show() {
-    // Add implementation if needed
-  }
-
-  /**
-   * Hide another game state which stacked on top of this one
-   */
-  public hide() {
-    // Add implementation if needed
-  }
 }

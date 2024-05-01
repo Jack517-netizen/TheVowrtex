@@ -5,6 +5,8 @@ import { GamePopup } from './popup'
 import { UserManager } from '../controllers/userManager'
 import { autorun, IReactionDisposer } from 'mobx'
 import { YouMenu } from '../menus/youMenu'
+import { GameStateManager } from '../controllers/stateManager'
+import { HomeGameState } from '../scenes/home'
 
 export class NavBar extends StackPanel {
   private _stop: IReactionDisposer
@@ -12,17 +14,30 @@ export class NavBar extends StackPanel {
   /**
    * Responsible for building a beautiful and dynamic navbar
    */
-  constructor(gui: AdvancedDynamicTexture, userManager: UserManager) {
+  constructor(gui: AdvancedDynamicTexture, userManager: UserManager, sid: string | void) {
     super('vortex-navbar')
     this.isVertical = false
     this.width = '100%'
+    this.height = '10%'
     this.top = '0px'
     this.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
     this.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
     //TODO: Build dynamic btn
     
-    let switchBtn = this.buildSwitchComponent(userManager, gui)
+    console.log(GameStateManager.getAllStates().size())
+    if(!GameStateManager.canBePop()) {
+      console.log('here 01')
+      let switchBtn = this.buildSwitchComponent(userManager, gui)
+      this.addControl(switchBtn)
+    } else {
+      console.log('here 02')
+      let backBtn = this.buildBackComponent()
+      let titleBtn = this.buildTitleComponent(sid !== undefined ? sid : 'game')
+
+      this.addControl(backBtn)
+      this.addControl(titleBtn)
+    }
     let texBtn = this.buildTexComponent(userManager, gui)
     let tokenBtn = this.buildTokenComponent(userManager, gui)
     let starBtn = this.buildStarComponent(userManager, gui)
@@ -30,13 +45,32 @@ export class NavBar extends StackPanel {
     let settingsBtn = this.buildSettingsComponent(userManager, gui)
     let arcturusBtn = this.buildArcturusBtn(gui)
 
-    this.addControl(switchBtn)
     this.addControl(texBtn)
     this.addControl(tokenBtn)
     this.addControl(starBtn)
     this.addControl(garageBtn)
     this.addControl(settingsBtn)
-    this.addControl(arcturusBtn)
+    if(!GameStateManager.canBePop()) this.addControl(arcturusBtn)
+  }
+  
+  private buildTitleComponent(id: string) {
+    const titleBtn = NavbarButton.createNavbarButtonOnlyWithText(
+      'titleButton',
+      id.toLocaleUpperCase(),
+    )
+    return titleBtn
+  }
+
+  private buildBackComponent() {
+    const backBtn = NavbarButton.createNavbarButtonOnlyWithImage(
+      'backButton',
+      'back.png',
+      () => {
+        //TODO: Pop current scene
+        //! GameStateManager.popState(new HomeGameState(undefined, undefined, true))
+      }
+    )
+    return backBtn
   }
 
   private buildSwitchComponent(
