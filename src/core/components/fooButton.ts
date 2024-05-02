@@ -4,9 +4,8 @@ import { AudioManager } from '../controllers/audioManager'
 import { IButton } from '../interfaces/button'
 
 export class FooterButton extends Button implements IButton {
-  
   /**
-   * 
+   *
    * @param id string
    * @param src string
    * @param content qtring
@@ -26,7 +25,7 @@ export class FooterButton extends Button implements IButton {
       content,
       '/assets/icons/' + src,
     )
-    
+
     _footerBtn.width = '300px'
     _footerBtn.height = '65px'
     _footerBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
@@ -34,7 +33,7 @@ export class FooterButton extends Button implements IButton {
     _footerBtn.color = colors.white.normal
     _footerBtn.thickness = 2
     _footerBtn.paddingBottom = '10px'
-    if(_footerBtn.image) _footerBtn.image.paddingLeft = '5px'
+    if (_footerBtn.image) _footerBtn.image.paddingLeft = '5px'
     _footerBtn.paddingRight = '10px'
     _footerBtn.background = customColor || colors.blue.rainbow
 
@@ -50,5 +49,4 @@ export class FooterButton extends Button implements IButton {
 
     return _footerBtn as FooterButton
   }
-
 }

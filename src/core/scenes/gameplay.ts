@@ -38,7 +38,7 @@ export class GameplayGameState implements IGameState {
     console.log('GAMEPLAY SCENE')
 
     // --this._scene FINISHED LOADING--
-    await  this._scene.whenReadyAsync()
+    await this._scene.whenReadyAsync()
     this._scene.attachControl()
     this._engine.hideLoadingUI()
   }

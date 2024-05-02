@@ -1,4 +1,4 @@
-import {Control, StackPanel, TextBlock } from '@babylonjs/gui'
+import { Control, StackPanel, TextBlock } from '@babylonjs/gui'
 import { colors } from '../../configs/colors'
 
 export class LeaderBoardMenu extends StackPanel {
@@ -14,10 +14,7 @@ export class LeaderBoardMenu extends StackPanel {
     this.isVisible = true
 
     // MSG CONTENT
-    let _text = new TextBlock(
-      'title-block',
-      'LEADERBOARD \n'
-    )
+    let _text = new TextBlock('title-block', 'LEADERBOARD \n')
     _text.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     _text.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 

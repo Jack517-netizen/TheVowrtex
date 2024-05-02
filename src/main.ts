@@ -1,8 +1,8 @@
-import { Game } from './core/app.ts'
 import { getAnalytics } from 'firebase/analytics'
 import isOnline from 'is-online'
 import { registerSW } from 'virtual:pwa-register'
 import { APP } from './core/components/app.ts'
+import GameAPP from './core/app.ts'
 
 /**--------ENTRY POINT---- */
 
@@ -14,13 +14,13 @@ isOnline().then((online) => {
     // Get canvas element
     let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
 
-    // Set canvas dimensions to match window size
+    // Set canvas dimensions to match window inner size
     render.width = window.innerWidth
     render.height = window.innerHeight
 
     // Running the app (if user is connected to internet)
-    let GAME = new Game(render)
-    GAME.init()
+    let GAME = new GameAPP(render)
+    GAME.run()
   } else {
     // Excuse page
     window.location.href = '/offline/'

@@ -21,13 +21,15 @@ export class SetupGameState implements IGameState {
 
   constructor(engine: Engine, scene: Scene, userManager: UserManager | void) {
     // init...
-    this.sid = 'Rival'
+    this.sid = 'Game Style'
     this._engine = engine
     this._scene = scene
     this._gameModeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
     this._audioManager = new AudioManager()
-    userManager !== undefined ? this._userManager = userManager : this._userManager = new UserManager()
-    
+    userManager !== undefined
+      ? (this._userManager = userManager)
+      : (this._userManager = new UserManager())
+
     // ...attach all listener (understand which affect the rebuild)
     this._listener()
 
@@ -49,7 +51,7 @@ export class SetupGameState implements IGameState {
     this._scene.detachControl()
     this._scene.clearColor = Color4.FromHexString(colors.gray.teal)
     let camera = new FreeCamera('rival-camera', Vector3.Zero(), this._scene)
-    
+
     this._navBar = new NavBar(this._gameModeGUI, this._userManager)
     this._gameModeGUI.addControl(this._navBar)
 

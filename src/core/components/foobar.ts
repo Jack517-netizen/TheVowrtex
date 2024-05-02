@@ -25,7 +25,13 @@ export class FooterBar extends StackPanel {
   }
 
   private buildPlayComponent(_gui: AdvancedDynamicTexture) {
-    return FooterButton.createFooterButton('playButton', 'play.png', 'PLAY', undefined, () => {})
+    return FooterButton.createFooterButton(
+      'playButton',
+      'play.png',
+      'PLAY',
+      undefined,
+      () => {},
+    )
   }
 
   private buildLeaderComponent(gui: AdvancedDynamicTexture) {
@@ -36,7 +42,8 @@ export class FooterBar extends StackPanel {
       colors.yellow.inclusive,
       () => {
         gui.addControl(GamePopup.showMenu(new LeaderBoardMenu()))
-      })
+      },
+    )
     return leaderBtn
   }
 
@@ -49,6 +56,12 @@ export class FooterBar extends StackPanel {
     if (_tmp !== null) {
       return _tmp as FooterButton
     }
-    return FooterButton.createFooterButton('undefined', 'undefined', 'undefined', 'undefined', () => {})
+    return FooterButton.createFooterButton(
+      'undefined',
+      'undefined',
+      'undefined',
+      'undefined',
+      () => {},
+    )
   }
 }

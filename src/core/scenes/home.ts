@@ -65,7 +65,6 @@ export class HomeGameState implements IGameState {
     // --this._scene SETUP--
     let camera = new FreeCamera('homeCamera', Vector3.Zero(), this._scene)
     this._navBar = new NavBar(this._homeGUI, this._userManager)
-    this._homeGUI.addControl(this._navBar)
     this._audioManager.playSound('neon-fury.ogg')
 
     let fooBar = new FooterBar(this._homeGUI)
@@ -78,16 +77,24 @@ export class HomeGameState implements IGameState {
         )
       } else {
         this._leave()
-        GameStateManager.pushState(new SetupGameState(this._engine, this._scene))
+        GameStateManager.pushState(
+          new SetupGameState(this._engine, this._scene),
+        )
         GameStateManager.logAllStates()
       }
     })
 
-    this._backgroundLayer = new Layer('homeLayer', '/assets/img/dome1.jpg', this._scene, true)
+    this._backgroundLayer = new Layer(
+      'homeLayer',
+      '/assets/img/dome1.jpg',
+      this._scene,
+      true,
+    )
     this._homeGUI.addControl(fooBar)
+    this._homeGUI.addControl(this._navBar)
 
     // --this._scene FINISHED LOADING--
-    await  this._scene.whenReadyAsync()
+    await this._scene.whenReadyAsync()
     this._scene.attachControl()
     this._engine.hideLoadingUI()
   }

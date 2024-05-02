@@ -160,5 +160,4 @@ export class GamePopup {
     _tmp.addControl(_stack)
     return _overlay.addControl(_tmp)
   }
-
 }

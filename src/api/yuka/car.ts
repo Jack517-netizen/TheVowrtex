@@ -1,5 +1,3 @@
 import * as YUKA from 'yuka'
 
-export class AICar {
-    
-}
+export class AICar {}

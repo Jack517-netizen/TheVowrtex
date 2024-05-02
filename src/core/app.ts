@@ -1,28 +1,39 @@
-import { Engine, Scene } from '@babylonjs/core'
-import '@babylonjs/core/Debug/debugLayer'
-import '@babylonjs/inspector'
-import { GameStateManager } from './controllers/stateManager'
+import { Engine } from '@babylonjs/core'
+import ScreenManager from './controllers/screenManager'
+import HomeScreen from './screens/homeScreen'
 import { AudioManager } from './controllers/audioManager'
 
-export class Game {
-  private _engine: Engine
-  private _scene: Scene
+export default class GameAPP {
+  private readonly _engine: Engine
+  private readonly _screenManager: ScreenManager
+  private _isDisposed: boolean = false
+  private readonly resizeHandler: VoidFunction = () => this._resize()
+  private readonly renderHandler: VoidFunction = () => this._render()
 
-  constructor(canvas: HTMLCanvasElement) {
-    this._engine = new Engine(canvas, true)
-    this._scene = new Scene(this._engine)
-
-    // Provide core references(Engine, Scene) to children
-    GameStateManager.initGame(this._engine, this._scene)
-
-    // Load inspector layer
-    this._loadInspector()
-
-    // Get status/update at top of app
-    this._listener()
+  constructor(readonly canvasElement: HTMLCanvasElement) {
+    this._engine = new Engine(canvasElement, true)
+    this._load()
   }
 
-  private _listener() {
+  /**
+   * Quit game method which release everything to avoid memory leak
+   * @param void
+   * @returns void
+   */
+  private _dispose(): void {
+    this._isDisposed = true
+    this.stop()
+    this._screenManager.dispose()
+    this._engine.dispose()
+  }
+
+  /**
+   * Load game applicationand initialize all components
+   * @param void
+   * @returns Promise<void>
+   */
+  private async _load(): Promise<void> {
+    //TODO: ...Load stuff...
     // Game app gained focus
     window.addEventListener('focus', () => {
       AudioManager.resumeAllSongs()
@@ -32,36 +43,67 @@ export class Game {
     window.addEventListener('blur', () => {
       AudioManager.freezeAllSongs()
     })
-  }
 
-  // Load debug tools
-  private _loadInspector() {
-    window.addEventListener('keydown', (evt) => {
-      if (evt.ctrlKey && evt.key === 'i') {
-        if (this._scene.debugLayer.isVisible()) {
-          this._scene.debugLayer.hide()
-        } else {
-          this._scene.debugLayer.show()
-        }
-      }
-    })
+    // Go to HomeScreen
+    this._screenManager.pushScreen(new HomeScreen(this))
   }
 
   /**
-   * Initialize the game by running the render loop
+   * Run app game method
+   * @param void
+   * @returns void
    */
-  public init(): void {
-    // Resizing event
-    window.addEventListener('resize', () => this._engine.resize())
-    this._engine.runRenderLoop(() => {
-      this._scene.render()
-    })
+  public run(): void {
+    window.addEventListener('resize', this.resizeHandler)
+    this._engine.runRenderLoop(this.renderHandler)
   }
 
   /**
-   * Dispose of resources when the game ends
+   * Exit app game method
+   * @param void
+   * @returns void
    */
-  public dispose(): void {
-    this._engine.dispose()
+  public stop(): void {
+    window.removeEventListener('resize', this.resizeHandler)
+    this._engine.stopRenderLoop(this.renderHandler)
   }
+
+  /**
+   * Resizing event method
+   * @param void
+   * @returns void
+   */
+  private _resize(): void {
+    this._engine.resize()
+  }
+
+  /**
+   * Render the matched scene to corresponding screen
+   * @param void
+   * @returns void
+   */
+  private _render(): void {
+    const _currentScreen = this._screenManager.getTopScreen()
+    if (_currentScreen === null) return
+
+    _currentScreen.render()
+  }
+
+	/**
+	 * getEngine returns the root engine instance created by GameAPP
+	 * @param void
+	 * @returns Engine
+	 */
+	public get getEngine(): Engine {
+		return this._engine
+	}
+
+	/**
+	 * getScreenManager returns the root screenManager instance created by GameAPP
+	 * @param void
+	 * @returns ScreenManager
+	 */
+	public get getScreenManager(): ScreenManager {
+		return this._screenManager
+	}
 }

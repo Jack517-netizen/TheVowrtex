@@ -1,7 +1,6 @@
 import { Button } from '@babylonjs/gui'
 
 export class GameButton extends Button {
-
   /**
    * createOkButton
    */
@@ -15,7 +14,7 @@ export class GameButton extends Button {
    * @param src string
    */
   public static createDirectionnalButton(id: string, src: string): GameButton {
-    let _tmp = Button.CreateImageOnlyButton(id, '/assets/icons/'+src)
+    let _tmp = Button.CreateImageOnlyButton(id, '/assets/icons/' + src)
     _tmp.width = '200px'
     _tmp.height = '200px'
     _tmp.paddingLeft = '20px'

@@ -14,7 +14,11 @@ export class NavBar extends StackPanel {
   /**
    * Responsible for building a beautiful and dynamic navbar
    */
-  constructor(gui: AdvancedDynamicTexture, userManager: UserManager, sid: string | void) {
+  constructor(
+    gui: AdvancedDynamicTexture,
+    userManager: UserManager,
+    sid: string | void,
+  ) {
     super('vortex-navbar')
     this.isVertical = false
     this.width = '100%'
@@ -24,9 +28,9 @@ export class NavBar extends StackPanel {
     this.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
     //TODO: Build dynamic btn
-    
+
     console.log(GameStateManager.getAllStates().size())
-    if(!GameStateManager.canBePop()) {
+    if (!GameStateManager.canBePop()) {
       console.log('here 01')
       let switchBtn = this.buildSwitchComponent(userManager, gui)
       this.addControl(switchBtn)
@@ -50,9 +54,9 @@ export class NavBar extends StackPanel {
     this.addControl(starBtn)
     this.addControl(garageBtn)
     this.addControl(settingsBtn)
-    if(!GameStateManager.canBePop()) this.addControl(arcturusBtn)
+    if (!GameStateManager.canBePop()) this.addControl(arcturusBtn)
   }
-  
+
   private buildTitleComponent(id: string) {
     const titleBtn = NavbarButton.createNavbarButtonOnlyWithText(
       'titleButton',
@@ -68,7 +72,7 @@ export class NavBar extends StackPanel {
       () => {
         //TODO: Pop current scene
         //! GameStateManager.popState(new HomeGameState(undefined, undefined, true))
-      }
+      },
     )
     return backBtn
   }
@@ -82,35 +86,47 @@ export class NavBar extends StackPanel {
       'login.png',
       'LOGIN',
       colors.red.crimson,
-      () => { })
+      () => {},
+    )
     this._stop = autorun(() => {
-      if(userManager.getGameUser.uid != 'xxx') {
-        NavbarButton.updateComponent(toggleBtn, 'youButton', 
-        'user.png', 'YOU', colors.violet.rainbow, () => {
-          gui.addControl(GamePopup.showMenu(new YouMenu(userManager)))
-        })
+      if (userManager.getGameUser.uid != 'xxx') {
+        NavbarButton.updateComponent(
+          toggleBtn,
+          'youButton',
+          'user.png',
+          'YOU',
+          colors.violet.rainbow,
+          () => {
+            gui.addControl(GamePopup.showMenu(new YouMenu(userManager)))
+          },
+        )
         return toggleBtn
       } else {
-        NavbarButton.updateComponent(toggleBtn, 'loginButton',
-        'login.png', 'LOGIN', colors.red.crimson, () => {
-          try {
-            // log in...
-            userManager.loginUser()
-          } catch (error: any) {
-            // ...error during log in process
-            return gui.addControl(
-              GamePopup.showInfoPopup(
-                'WE ARE SORRY... AN ERROR OCCURED WHEN TRYING TO LOG IN YOU.\n ' +
-                  error.code +
-                  '\n' +
-                  error.message +
-                  '\n' +
-                  'TRY AGAIN LATER.',
-              ),
-            )
-          }
-        })
-        
+        NavbarButton.updateComponent(
+          toggleBtn,
+          'loginButton',
+          'login.png',
+          'LOGIN',
+          colors.red.crimson,
+          () => {
+            try {
+              // log in...
+              userManager.loginUser()
+            } catch (error: any) {
+              // ...error during log in process
+              return gui.addControl(
+                GamePopup.showInfoPopup(
+                  'WE ARE SORRY... AN ERROR OCCURED WHEN TRYING TO LOG IN YOU.\n ' +
+                    error.code +
+                    '\n' +
+                    error.message +
+                    '\n' +
+                    'TRY AGAIN LATER.',
+                ),
+              )
+            }
+          },
+        )
       }
     })
 
@@ -125,7 +141,7 @@ export class NavBar extends StackPanel {
       colors.dark.normal,
       () => {
         gui.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
-      }
+      },
     )
     return arcturusBtn
   }
@@ -147,13 +163,9 @@ export class NavBar extends StackPanel {
             ),
           )
         } else {
-          gui.addControl(
-            GamePopup.showInfoPopup(
-              'SETTINGS. \n',
-            ),
-          )
+          gui.addControl(GamePopup.showInfoPopup('SETTINGS. \n'))
         }
-      }
+      },
     )
     return settingsBtn
   }
@@ -175,13 +187,9 @@ export class NavBar extends StackPanel {
             ),
           )
         } else {
-          gui.addControl(
-            GamePopup.showInfoPopup(
-              'GARAGE. \n ',
-            ),
-          )
+          gui.addControl(GamePopup.showInfoPopup('GARAGE. \n '))
         }
-      }
+      },
     )
     return garageBtn
   }
@@ -204,7 +212,7 @@ export class NavBar extends StackPanel {
           )
         }
         // TODO: Game logic goes here
-      }
+      },
     )
     return starBtn
   }
@@ -227,7 +235,7 @@ export class NavBar extends StackPanel {
           )
         }
         // TODO: Game logic goes here
-      }
+      },
     )
     return tokenBtn
   }
@@ -250,7 +258,7 @@ export class NavBar extends StackPanel {
           )
         }
         // TODO: Game logic goes here
-      }
+      },
     )
     return texBtn
   }
@@ -265,11 +273,17 @@ export class NavBar extends StackPanel {
     if (_tmp !== null && _tmp instanceof NavbarButton) {
       return _tmp
     }
-    return NavbarButton.createNavbarButton('undefined', 'undefined', 'undefined', 'undefined', () => {})
+    return NavbarButton.createNavbarButton(
+      'undefined',
+      'undefined',
+      'undefined',
+      'undefined',
+      () => {},
+    )
   }
 
   /**
-   * This build method releases or disposes ressources allocated 
+   * This build method releases or disposes ressources allocated
    * to header navigation bar
    * @param void
    * @returns void
