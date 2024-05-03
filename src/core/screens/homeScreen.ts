@@ -36,7 +36,6 @@ export default class HomeScreen implements IGameScreen {
 		this._userManager = new UserManager()
 
 		// ... build ui
-    AudioManager.playAudio('neon-fury.ogg')
 		this._build()
 	}
 
@@ -61,8 +60,7 @@ export default class HomeScreen implements IGameScreen {
 		this._scene.attachControl()
 		this._engine.onResizeObservable.add(this._resize, undefined, undefined, this)
 		this._resize()
-    AudioManager.resumeAllSongs()
-    
+    AudioManager.playAudio('neon-fury.ogg')
 
 		// ...attach all listener (understand which affect the rebuild)
 		this._listener()
@@ -70,7 +68,7 @@ export default class HomeScreen implements IGameScreen {
 
 	deactivate(): void {
     this._navBar.stop()
-    AudioManager.freezeAllSongs()
+    AudioManager.disposeAllSongs()
 
 		this._engine.onResizeObservable.removeCallback(this._resize, this)
 		this._scene.detachControl()
