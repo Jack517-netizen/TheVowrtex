@@ -9,9 +9,6 @@ import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
 import { UserManager } from '../controllers/userManager'
 import { GameButton } from '../components/buttons'
-import { colors } from '../../configs/colors'
-import { GameAudio } from '../../entities/audio'
-import { AudioType } from '../enums/audio'
 
 export default class GameModeScreen implements IGameScreen {
   private readonly _engine: Engine
@@ -19,7 +16,6 @@ export default class GameModeScreen implements IGameScreen {
   private readonly _game: GameAPP
   _screenId: string
   private readonly _gameModeGUI: AdvancedDynamicTexture
-  private readonly _audioManager: AudioManager
   private readonly _userManager: UserManager
   private _navBar: NavBar
   private _backgroundLayer: Layer
@@ -34,10 +30,10 @@ export default class GameModeScreen implements IGameScreen {
     this._debugGame()
 
     this._gameModeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-    this._audioManager = this.game.getAudioManager
     this._userManager = new UserManager()
 
     // ... build ui
+    AudioManager.playAudio('race-phonk.ogg')
     this._build()
   }
 
@@ -62,17 +58,14 @@ export default class GameModeScreen implements IGameScreen {
     this._scene.attachControl()
     this._engine.onResizeObservable.add(this._resize, undefined, undefined, this)
     this._resize()
-    this._audioManager.playAudio('race-phonk.ogg')
+    AudioManager.resumeAllSongs()
 
     // ...attach all listener (understand which affect the rebuild)
     this._listener()
   }
 
   deactivate(): void {
-    const _tmp = this._audioManager.getDesiredAudio('race-phonk.ogg')
-    if(_tmp !== undefined) {
-      _tmp.pause()
-    }
+    AudioManager.freezeAllSongs()
 
     this._engine.onResizeObservable.removeCallback(this._resize, this)
     this._scene.detachControl()
@@ -83,6 +76,7 @@ export default class GameModeScreen implements IGameScreen {
   }
 
   dispose(): void {
+    AudioManager.disposeAllSongs()
     this._scene.dispose()
   }
 

@@ -44,7 +44,7 @@ export class NavbarButton extends Button implements IButton {
 
     // attach sound sfx
     _navBtn.onPointerClickObservable.add(() => {
-      AudioManager.playInstantSound('click-ui.mp3')
+      AudioManager.playInstantAudio('click-ui.mp3')
     })
 
     // attach defined action process
@@ -104,7 +104,7 @@ export class NavbarButton extends Button implements IButton {
 
     // attach sound sfx
     _navBtn.onPointerClickObservable.add(() => {
-      AudioManager.playInstantSound('back-ui.mp3')
+      AudioManager.playInstantAudio('back-ui.mp3')
     })
 
     // attach defined action process

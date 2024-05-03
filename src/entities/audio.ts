@@ -7,9 +7,9 @@ export class GameAudio extends Sound {
   constructor(url: string, type: AudioType) {
     // init babylon sound...
     super(`${url}`, `/assets/sounds/${url}`, null, () => {}, {
-      autoplay: type === AudioType.MUSIC ? true : false,
+      autoplay: type === AudioType.MUSIC || AudioType.SFX ? true : false,
       loop: type === AudioType.MUSIC ? true : false,
-      spatialSound: type === AudioType.MUSIC ? true : false,
+      spatialSound: type === AudioType.MUSIC || AudioType.SFX ? true : false,
       volume:type === AudioType.MUSIC ? 0.5 : 0.9,
     })
 

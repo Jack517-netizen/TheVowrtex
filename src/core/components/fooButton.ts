@@ -39,7 +39,7 @@ export class FooterButton extends Button implements IButton {
 
     // attach sound sfx
     _footerBtn.onPointerClickObservable.add(() => {
-      AudioManager.playInstantSound('click-ui.mp3')
+      AudioManager.playInstantAudio('click-ui.mp3')
     })
 
     // attach defined action process

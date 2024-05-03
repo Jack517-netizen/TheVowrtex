@@ -33,10 +33,10 @@ export default class HomeScreen implements IGameScreen {
 		this._debugGame()
 
 		this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-		this._audioManager = game.getAudioManager
 		this._userManager = new UserManager()
 
 		// ... build ui
+    AudioManager.playAudio('neon-fury.ogg')
 		this._build()
 	}
 
@@ -61,7 +61,8 @@ export default class HomeScreen implements IGameScreen {
 		this._scene.attachControl()
 		this._engine.onResizeObservable.add(this._resize, undefined, undefined, this)
 		this._resize()
-    this._audioManager.playAudio('neon-fury.ogg')
+    AudioManager.resumeAllSongs()
+    
 
 		// ...attach all listener (understand which affect the rebuild)
 		this._listener()
@@ -69,10 +70,7 @@ export default class HomeScreen implements IGameScreen {
 
 	deactivate(): void {
     this._navBar.stop()
-    const _tmp = this._audioManager.getDesiredAudio('race-phonk.ogg')
-    if(_tmp !== undefined) {
-      _tmp.pause()
-    }
+    AudioManager.freezeAllSongs()
 
 		this._engine.onResizeObservable.removeCallback(this._resize, this)
 		this._scene.detachControl()
@@ -83,6 +81,7 @@ export default class HomeScreen implements IGameScreen {
 	}
 
 	dispose(): void {
+    AudioManager.disposeAllSongs()
 		this._scene.dispose()	
 	}
 

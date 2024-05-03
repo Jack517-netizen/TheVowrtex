@@ -6,7 +6,6 @@ import { AudioManager } from './controllers/audioManager'
 export default class GameAPP {
   private readonly _engine: Engine
   private readonly _screenManager: ScreenManager = new ScreenManager()
-  private readonly _audioManager: AudioManager = new AudioManager()
   private _isDisposed: boolean = false
   private readonly resizeHandler: VoidFunction = () => this._resize()
   private readonly renderHandler: VoidFunction = () => this._render()
@@ -98,7 +97,8 @@ export default class GameAPP {
   private _checkFocus(): void {
     // Game app gained focus
     window.addEventListener('focus', () => {
-      this._audioManager.resumeAllSongs()
+      console.log('focus')
+      AudioManager.resumeAllSongs()
     })
   }
 
@@ -110,7 +110,8 @@ export default class GameAPP {
   private _checkBlur(): void {
     // Game app losts focus
     window.addEventListener('blur', () => {
-      this._audioManager.freezeAllSongs()
+      console.log('blur')
+      AudioManager.freezeAllSongs()
     })
   }
 
@@ -132,12 +133,4 @@ export default class GameAPP {
     return this._screenManager
   }
 
-  /**
-   * getAudioManager returns the root audioManager instance created by GameAPP
-   * @param void
-   * @returns ScreenManager
-   */
-  public get getAudioManager(): AudioManager {
-    return this._audioManager
-  }
 }
