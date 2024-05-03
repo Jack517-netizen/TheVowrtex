@@ -19,7 +19,7 @@ export default class ScreenManager {
    * @param void
    * @returns Nullable<IGameScreen>
    */
-  public getTopScreen(): IGameScreen | null {
+  public get getTopScreen(): IGameScreen | null {
     return this._screens.length > 0
       ? this._screens[this._screens.length - 1]
       : null
@@ -31,7 +31,7 @@ export default class ScreenManager {
    * @returns void
    */
   public pushScreen(nextScreen: IGameScreen): void {
-    const _topScreen = this.getTopScreen()
+    const _topScreen = this.getTopScreen
     if (_topScreen !== null) _topScreen.deactivate()
 
     this._screens.push(nextScreen)
@@ -46,12 +46,12 @@ export default class ScreenManager {
   public popScreen(numberOfScreens: number = 1): void {
     if (numberOfScreens < 1) return
 
-    let _topScreen = this.getTopScreen()
+    let _topScreen = this.getTopScreen
     if (_topScreen === null) return
     _topScreen.deactivate()
 
     while (numberOfScreens > 0) {
-      _topScreen = this.getTopScreen()
+      _topScreen = this.getTopScreen
       if (_topScreen === null) return
 
       _topScreen.dispose()
@@ -59,7 +59,7 @@ export default class ScreenManager {
       numberOfScreens--
     }
 
-    _topScreen = this.getTopScreen()
+    _topScreen = this.getTopScreen
     if (_topScreen === null) return
     _topScreen.activate()
   }
@@ -82,8 +82,8 @@ export default class ScreenManager {
    * @param void
    * @returns Boolean
    */
-  public canBePop(): Boolean {
-    return this.getTopScreen() !== null
+  public get canBePop(): Boolean {
+    return this.getTopScreen !== null
   }
 
   /**
@@ -91,7 +91,7 @@ export default class ScreenManager {
    * @param void
    * @returns IGameScreen[]
    */
-  public getAllStates(): IGameScreen[] {
+  public get getAllStates(): IGameScreen[] {
     return this._screens
   }
 }

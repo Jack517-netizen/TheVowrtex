@@ -1,11 +1,11 @@
 export interface IAudioLayer {
   /**
-   * Play a given sound based on url provided
+   * Play a given sound based on name provided
    */
-  playSound(url: string): void
+  playAudio(name: string): void
 
   /**
-   * Pause a given sound
+   * Pause a given sound based on name provided
    */
-  pauseSound(): void
+  pauseAudio(name: string): void
 }

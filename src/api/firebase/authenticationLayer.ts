@@ -73,10 +73,8 @@ export class FirebaseAuthLayer {
         if (user) {
           // User is signed in
           resolve(user)
-          console.log('cuurent')
         } else {
           // User is signed out
-          console.log('ouut')
         }
       })
       return true

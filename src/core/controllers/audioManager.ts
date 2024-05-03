@@ -3,36 +3,36 @@ import { GameAudio } from '../../entities/audio'
 import { AudioType } from '../enums/audio'
 
 export class AudioManager implements IAudioLayer {
-  private _gameAudio: GameAudio
-  private static _instances: Array<GameAudio> = new Array()
+  private _instances: GameAudio[] = []
 
   /**
-   * Play a given sound
+   * Play a given audio
    * @param url the root url of the audio track
    * @returns void
    */
-  public playSound(url: string): void {
-    this._gameAudio = new GameAudio(url, AudioType.MUSIC)
-    AudioManager._instances.push(this._gameAudio)
+  public playAudio(url: string): void {
+    const _gameMusic = new GameAudio(url, AudioType.MUSIC)
+    this._instances.push(_gameMusic)
   }
 
   /**
-   * Play a sound in short given time
+   * Play an audio in short given time
    * @param url the root url of the audio track
    * @returns void
    */
-  public static playInstantSound(url: string): void {
-    let _instantSound = new GameAudio(url, AudioType.MUSIC)
-    AudioManager._instances.push(_instantSound)
+  public playInstantAudio(url: string): void {
+    const _gameSFX = new GameAudio(url, AudioType.SFX)
+    this._instances.push(_gameSFX)
   }
 
   /**
-   * Pause a given sound
+   * Pause a given audio found by its name
    * @param void
    * @returns void
    */
-  public pauseSound(): void {
-    this._gameAudio.pause()
+  public pauseAudio(name: string): void {
+    const _foundAudio = this.getDesiredAudio(name)
+    if (_foundAudio !== undefined) _foundAudio.pause()
   }
 
   /**
@@ -40,19 +40,9 @@ export class AudioManager implements IAudioLayer {
    * @param void
    * @returns GameAudio
    */
-  public getCurrentAudio(): GameAudio {
-    return this._gameAudio
-  }
-
-  /**
-   * Re-define new audio track to manage
-   * ...Useful to change the environment audio based on user position
-   * for example...
-   * @param GameAudio
-   * @returns void
-   */
-  public setNewTrack(newGameAudio: GameAudio): void {
-    this._gameAudio = newGameAudio
+  public getDesiredAudio(id: string): GameAudio | undefined {
+    const _tmp = this._instances.find((audio) => audio.name === id)
+    return _tmp
   }
 
   /**
@@ -61,8 +51,8 @@ export class AudioManager implements IAudioLayer {
    * @param void
    * @returns number
    */
-  public static getNumberOfTracks(): number {
-    return AudioManager._instances.length
+  public getNumberOfTracks(): number {
+    return this._instances.length
   }
 
   /**
@@ -71,8 +61,8 @@ export class AudioManager implements IAudioLayer {
    * @param void
    * @returns void
    */
-  public static disposeAllSongs(): void {
-    AudioManager._instances.forEach((audioTrack) => {
+  public disposeAllSongs(): void {
+    this._instances.forEach((audioTrack) => {
       audioTrack.dispose()
     })
   }
@@ -83,8 +73,8 @@ export class AudioManager implements IAudioLayer {
    * @param void
    * @returns void
    */
-  public static freezeAllSongs(): void {
-    AudioManager._instances.forEach((audioTrack) => {
+  public freezeAllSongs(): void {
+    this._instances.forEach((audioTrack) => {
       if (audioTrack.isPlaying) {
         audioTrack.pause()
       }
@@ -97,8 +87,8 @@ export class AudioManager implements IAudioLayer {
    * @param void
    * @returns void
    */
-  public static resumeAllSongs(): void {
-    AudioManager._instances.forEach((audioTrack) => {
+  public resumeAllSongs(): void {
+    this._instances.forEach((audioTrack) => {
       if (audioTrack.isPaused) {
         audioTrack.play()
       }

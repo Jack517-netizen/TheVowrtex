@@ -5,21 +5,23 @@ import { GamePopup } from './popup'
 import { UserManager } from '../controllers/userManager'
 import { autorun, IReactionDisposer } from 'mobx'
 import { YouMenu } from '../menus/youMenu'
-import { GameStateManager } from '../controllers/stateManager'
-import { HomeGameState } from '../scenes/home'
+import GameAPP from '../app'
 
 export class NavBar extends StackPanel {
   private _stop: IReactionDisposer
+  private readonly _app: GameAPP
 
   /**
    * Responsible for building a beautiful and dynamic navbar
    */
   constructor(
+    app: GameAPP,
     gui: AdvancedDynamicTexture,
     userManager: UserManager,
     sid: string | void,
   ) {
     super('vortex-navbar')
+    this._app = app
     this.isVertical = false
     this.width = '100%'
     this.height = '10%'
@@ -27,15 +29,10 @@ export class NavBar extends StackPanel {
     this.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
     this.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
-    //TODO: Build dynamic btn
-
-    console.log(GameStateManager.getAllStates().size())
-    if (!GameStateManager.canBePop()) {
-      console.log('here 01')
+    if (!this._app.getScreenManager.canBePop) {
       let switchBtn = this.buildSwitchComponent(userManager, gui)
       this.addControl(switchBtn)
     } else {
-      console.log('here 02')
       let backBtn = this.buildBackComponent()
       let titleBtn = this.buildTitleComponent(sid !== undefined ? sid : 'game')
 
@@ -54,7 +51,7 @@ export class NavBar extends StackPanel {
     this.addControl(starBtn)
     this.addControl(garageBtn)
     this.addControl(settingsBtn)
-    if (!GameStateManager.canBePop()) this.addControl(arcturusBtn)
+    if (!this._app.getScreenManager.canBePop) this.addControl(arcturusBtn)
   }
 
   private buildTitleComponent(id: string) {
@@ -70,8 +67,7 @@ export class NavBar extends StackPanel {
       'backButton',
       'back.png',
       () => {
-        //TODO: Pop current scene
-        //! GameStateManager.popState(new HomeGameState(undefined, undefined, true))
+        this._app.getScreenManager.popScreen()
       },
     )
     return backBtn

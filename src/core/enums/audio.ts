@@ -23,4 +23,9 @@ export enum AudioType {
    * sound results in an aural form of expression which can be differentiated as music
    */
   MUSIC,
+
+   /**
+   * The short-song which can be play in short time
+   */
+   SFX,
 }
