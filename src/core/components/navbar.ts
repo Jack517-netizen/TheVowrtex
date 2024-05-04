@@ -6,6 +6,9 @@ import { UserManager } from '../controllers/userManager'
 import { autorun, IReactionDisposer } from 'mobx'
 import { YouMenu } from '../menus/youMenu'
 import GameAPP from '../app'
+import GarageScreen from '../screens/garageScreen'
+import { SettingsMenu } from '../menus/settingsMenu'
+import { ArkkturusMenu } from '../menus/arkkturusMenu'
 
 export class NavBar extends StackPanel {
   private _stop: IReactionDisposer
@@ -20,7 +23,7 @@ export class NavBar extends StackPanel {
     userManager: UserManager,
     sid: string | void,
   ) {
-    super('vortex-navbar')
+    super('vowrtexNavbar')
     this._app = app
     this.isVertical = false
     this.width = '100%'
@@ -43,15 +46,16 @@ export class NavBar extends StackPanel {
     let tokenBtn = this.buildTokenComponent(userManager, gui)
     let starBtn = this.buildStarComponent(userManager, gui)
     let garageBtn = this.buildGarageComponent(userManager, gui)
+    if(sid === 'garage') garageBtn.isEnabled = false
     let settingsBtn = this.buildSettingsComponent(userManager, gui)
-    let arcturusBtn = this.buildArcturusBtn(gui)
+    let arkkturusBtn = this.buildArkkturusBtn(gui)
 
     this.addControl(texBtn)
     this.addControl(tokenBtn)
     this.addControl(starBtn)
     this.addControl(garageBtn)
     this.addControl(settingsBtn)
-    if (!this._app.getScreenManager.canBePop) this.addControl(arcturusBtn)
+    if (!this._app.getScreenManager.canBePop) this.addControl(arkkturusBtn)
   }
 
   private buildTitleComponent(id: string) {
@@ -129,17 +133,17 @@ export class NavBar extends StackPanel {
     return toggleBtn
   }
 
-  private buildArcturusBtn(gui: AdvancedDynamicTexture) {
-    const arcturusBtn = NavbarButton.createNavbarButton(
+  private buildArkkturusBtn(gui: AdvancedDynamicTexture) {
+    const arkkturusBtn = NavbarButton.createNavbarButton(
       'arcturusButton',
       'arcturus.png',
       'ARCTURUS',
       colors.dark.normal,
       () => {
-        gui.addControl(GamePopup.showInfoPopup('GET IN TOUCH'))
+        gui.addControl(GamePopup.showMenu(new ArkkturusMenu()))
       },
     )
-    return arcturusBtn
+    return arkkturusBtn
   }
 
   private buildSettingsComponent(
@@ -159,7 +163,7 @@ export class NavBar extends StackPanel {
             ),
           )
         } else {
-          gui.addControl(GamePopup.showInfoPopup('SETTINGS. \n'))
+          gui.addControl(GamePopup.showMenu(new SettingsMenu()))
         }
       },
     )
@@ -183,7 +187,7 @@ export class NavBar extends StackPanel {
             ),
           )
         } else {
-          gui.addControl(GamePopup.showInfoPopup('GARAGE. \n '))
+          this._app.getScreenManager.pushScreen(new GarageScreen(this._app))
         }
       },
     )
@@ -206,8 +210,18 @@ export class NavBar extends StackPanel {
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
           )
+        } else {
+          return gui.addControl(
+            GamePopup.showInfoPopup(
+              'STAR\n' +
+              "Value: " + userManager.getGameUser.star + 
+              "\n\n\n" + 
+              "About: STAR is like the sum of experience you gained based on a couple of things.\n" + 
+              "Each race is based on 5 STAR: 3 STAR depends on your position at the end of race\n and the 2 latest based " + 
+              "on special things you must do during racing."
+            ),
+          )
         }
-        // TODO: Game logic goes here
       },
     )
     return starBtn
@@ -229,8 +243,17 @@ export class NavBar extends StackPanel {
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
           )
+        } else {
+          return gui.addControl(
+            GamePopup.showInfoPopup(
+              'TOKEN\n' +
+              "You have: " + userManager.getGameUser.token + 
+              "\n\n\n" + 
+              "About: TOKEN is like gold or diamond in our real life.\n" + 
+              "To have an idea, 1 GOLD = 10 TOKEN. It is rare but not impossible to earn.\n"
+            ),
+          )
         }
-        // TODO: Game logic goes here
       },
     )
     return tokenBtn
@@ -252,8 +275,18 @@ export class NavBar extends StackPanel {
               'You must log in before!\n Anonymous login system will be coming soon...',
             ),
           )
+        } else {
+          return gui.addControl(
+            GamePopup.showInfoPopup(
+              'TEX\n' +
+              "You have: " + userManager.getGameUser.tex + 
+              "\n\n\n" + 
+              "About: TEX is the well-known and popular currency used in VOWRTEX.\n" + 
+              "Nobody know if its value will change based on upcoming events which can influence our universe.\n" +
+              "To have an idea, 1 DOLLAR = 1,000 TEX. In future,\n your earning will be very useful to buy cars, sell and buy in MARKETPLACE and do a lot of things."
+            ),
+          )
         }
-        // TODO: Game logic goes here
       },
     )
     return texBtn

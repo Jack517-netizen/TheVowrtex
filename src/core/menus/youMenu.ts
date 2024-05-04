@@ -1,11 +1,12 @@
 import { Control, StackPanel, TextBlock } from '@babylonjs/gui'
 import { colors } from '../../configs/colors'
 import { UserManager } from '../controllers/userManager'
+import { styles } from '../../configs/styles'
 
 export class YouMenu extends StackPanel {
   constructor(userManager: UserManager) {
     // POPUP
-    super('you-stack')
+    super('youStack')
     this.background = colors.dark.normal
     this.alpha = 0.95
     this.color = colors.white.normal
@@ -16,7 +17,7 @@ export class YouMenu extends StackPanel {
 
     // MSG CONTENT
     let _text = new TextBlock(
-      'title-block',
+      'titleTextBlock',
       'USER INFORMATIONS \n ' +
         userManager.getGameUser.uid +
         '\n' +
@@ -29,6 +30,7 @@ export class YouMenu extends StackPanel {
     )
     _text.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     _text.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
+    _text.fontSize = styles.headline4
 
     this.addControl(_text)
   }

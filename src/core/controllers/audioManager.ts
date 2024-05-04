@@ -26,22 +26,6 @@ export class AudioManager implements IAudioLayer {
   }
 
   /**
-   * Pause a given audio found by its name
-   * !!!! Not implemented yet
-   */
-  public static pauseAudio(): void {
-    //TODO: ...Run code here...
-  }
-
-  /**
-   * Get the current audio track
-   * !!!! Not implemented yet
-   */
-  public static getDesiredAudio() {
-    //TODO: ...Run code here...
-  }
-
-  /**
    * Get the number of
    * all audio tracks managed by audioManager
    * @param void

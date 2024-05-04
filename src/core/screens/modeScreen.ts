@@ -1,14 +1,16 @@
-import { Color4, Engine, FreeCamera, Layer, Scene, Vector3 } from '@babylonjs/core'
+import { Engine, FreeCamera, Layer, Scene, Vector3 } from '@babylonjs/core'
 import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
 import IGameScreen from '../interfaces/screen'
 import GameAPP from '../app'
-import { AdvancedDynamicTexture, Container, Control, Image, TextBlock } from '@babylonjs/gui'
-import { reaction } from 'mobx'
+import { AdvancedDynamicTexture, Button, Container, Control, Image, TextBlock } from '@babylonjs/gui'
+import { action, computed, makeObservable, observable, reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
 import { UserManager } from '../controllers/userManager'
 import { GameButton } from '../components/buttons'
+import { colors } from '../../configs/colors'
+import { styles } from '../../configs/styles'
 
 export default class GameModeScreen implements IGameScreen {
   private readonly _engine: Engine
@@ -18,9 +20,14 @@ export default class GameModeScreen implements IGameScreen {
   private readonly _gameModeGUI: AdvancedDynamicTexture
   private readonly _userManager: UserManager
   private _navBar: NavBar
-  private _backgroundLayer: Layer
+  _index: number = 1
 
   constructor(readonly game: GameAPP) {
+    makeObservable(this, {
+      _index: observable,
+      getIndex: computed,
+      _slide: action
+    })
     this._game = game
     this._engine = game.getEngine
     this._scene = new Scene(this._engine)
@@ -108,48 +115,78 @@ export default class GameModeScreen implements IGameScreen {
 
     let arrowLeft = GameButton.createDirectionnalButton(
       'leftArrowBtn',
-      'left-arrow.png',
-    )
+      'left-arrow.png', () => {})
     arrowLeft.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     arrowLeft.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
-
     let arrowRight = GameButton.createDirectionnalButton(
       'rightArrowBtn',
       'right-arrow.png',
-    )
+      () => {})
     arrowRight.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     arrowRight.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
 
-    let imageContainer = new Container('imgContainer')
-    imageContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
-    imageContainer.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
-    imageContainer.width = '450px'
-    imageContainer.height = '400px'
-
-    let infoStack = new Container('infoStackPanel')
-    imageContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
-    imageContainer.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
-
-    let modeTitle = new TextBlock('titleTextBlock', 'CRAZY COURSE')
-    modeTitle.fontSize = '16px'
-    infoStack.addControl(modeTitle)
+    let modeTitle = new TextBlock('titleTextBlock', 'TITLE')
+    modeTitle.fontSize = '42px'
+    modeTitle.fontWeight = '900'
+    modeTitle.top = '13%'
+    modeTitle.color = colors.white.normal
+    modeTitle.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+    modeTitle.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
+    modeTitle.height = '15%'
 
     let descTitle = new TextBlock('descriptionTextBlock', 'A DESCRIPTION')
-    descTitle.fontSize = '16px'
-    infoStack.addControl(descTitle)
+    descTitle.fontSize = styles.headline2
+    descTitle.fontWeight = '600'
+    descTitle.color = colors.white.normal
+    descTitle.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
+    descTitle.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
+    descTitle.height = '10%'
 
-    let imageBlock = new Image('imagePart', '/assets/img/vortex.jpg')
-    imageBlock.width = '100%'
-    imageBlock.height = '100%'
-    imageContainer.addControl(imageBlock)
-    this._gameModeGUI.addControl(imageContainer)
-    this._backgroundLayer = new Layer(
+    let gameModePanel = new Container('gameModePanel')
+
+    let imageBlock = new Image('imagePart', `/assets/img/dome${this.getIndex}.jpg`)
+    imageBlock.width = '60%'
+    imageBlock.height = '50%'
+    imageBlock.highlightLineWidth = 15
+    imageBlock.highlightColor = colors.violet.rainbow
+    imageBlock.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+    imageBlock.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
+    gameModePanel.addControl(imageBlock)
+    
+    let isLocked = true
+
+    if(isLocked) {
+      let lockBlock =  Button.CreateImageOnlyButton('lockBlockImg', `/assets/icons/lock.png`)
+      lockBlock.background = colors.dark.competitive
+      lockBlock.alpha = 0.9
+      lockBlock.width = '60%'
+      lockBlock.height = '50%'
+      if(lockBlock.image) lockBlock.image.width = '100px'
+      if(lockBlock.image) lockBlock.image.height = '100px'
+      if(lockBlock.image) {
+        lockBlock.image.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+        lockBlock.image.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER  
+      }
+      lockBlock.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+      lockBlock.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
+      gameModePanel.addControl(lockBlock)
+    } else {
+      let selectBtn = GameButton.createActionButton('SELECT', () => {})
+      selectBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+      selectBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
+      gameModePanel.addControl(selectBtn)
+    }
+
+    const _backgroundLayer = new Layer(
       'homeLayer',
       '/assets/img/dome1.jpg',
       this._scene,
       true,
     )
-
+   
+    this._gameModeGUI.addControl(modeTitle)
+    this._gameModeGUI.addControl(descTitle)
+    this._gameModeGUI.addControl(gameModePanel)
     this._gameModeGUI.addControl(arrowLeft)
     this._gameModeGUI.addControl(arrowRight)
     this._gameModeGUI.addControl(this._navBar)
@@ -158,5 +195,21 @@ export default class GameModeScreen implements IGameScreen {
     await this._scene.whenReadyAsync()
     this._scene.attachControl()
     this._engine.hideLoadingUI()
+  }
+
+  /**
+   * Slide on possible value of index
+   * @param void
+   * @returns void
+   */
+  public _slide(_symbol: string) {}
+
+  /**
+   * Return the current slide index
+   * @param void
+   * @returns number
+   */
+  public get getIndex(): number {
+    return this._index
   }
 }
