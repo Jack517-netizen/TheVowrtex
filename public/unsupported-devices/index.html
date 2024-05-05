@@ -35,12 +35,11 @@
       href="/assets/img/maskable-icon.png"
       color="#FFFFFF"
     />
-    <title>Vortex. | Offline</title>
-    <meta name="description" content="The Ultimate Racing Universe" />
+    <title>Vortex. | Unsupported browsers</title>
+    <meta name="description" content="The race of your life." />
     <style>
       body {
         font-family: 'Rubik', sans-serif;
-        overflow: hidden;
       }
       .content {
         display: flex;
@@ -48,9 +47,13 @@
         flex-direction: column;
         text-align: center;
       }
+      .highlight {
+        color: rgb(117, 0, 117);
+        font-weight: 800;
+      }
       .content img {
-        width: 45%;
-        height: 45%;
+        width: 50%;
+        height: 50%;
       }
       .loader {
         position: fixed;
@@ -86,19 +89,26 @@
           display: none;
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js/src/ua-parser.min.js"></script>
     <script>
       window.addEventListener('load', () => {
         const loader = document.querySelector('.loader')
         if (loader) loader.classList.add('loader--hidden')
         document.body.firstElementChild.remove()
+        const uap = new UAParser()
+        const result = uap.getResult()
+        let infoTag = document.querySelector('#generated-content')
+        infoTag.innerHTML = `<h3>Looks like you're using <span class='highlight'>${browser.name} browser</span>` + 
+        `on <span class='highlight'>${os.name} device</span>! No worries, We are actively working on responsive design for` + 
+        ` mobile devices. Instead, use desktop or large screen device for moment.</h3>`
       })
     </script>
 </head>
 <body>
     <div class="loader"></div>
     <div class="content">
-      <img src="/assets/img/no-connection.png" alt="Illustration for no connection">
-      <h3>Looks like you're offline! No worries, We are busy creating an offline version of the game just for you.</h3>
+      <img src="/assets/img/unsupported-devices.png" alt="Illustration for not yet unsupported devices">
+      <div id="generated-content"></div>
     </div>
 </body>
 </html>

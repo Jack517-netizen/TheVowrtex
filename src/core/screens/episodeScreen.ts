@@ -47,7 +47,7 @@ export default class EpisodeScreen implements IGameScreen {
     this._app = game
     this._engine = game.getEngine
     this._scene = new Scene(this._engine)
-    this._screenId = 'EPISODES'
+    this._screenId = 'episodes'
 
     // Attach inspector debug tools
     this._debugGame()

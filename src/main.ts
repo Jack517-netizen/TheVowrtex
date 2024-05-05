@@ -1,12 +1,13 @@
 import { getAnalytics } from 'firebase/analytics'
 import isOnline from 'is-online'
 import { registerSW } from 'virtual:pwa-register'
+import { UAParser } from 'ua-parser-js'
 import { APP } from './core/components/app.ts'
 import GameAPP from './core/app.ts'
 
 /**--------ENTRY POINT---- */
 
-// Get user network state
+// Get user network state && Running the app (if user is connected to internet)
 isOnline().then((online) => {
   if (online) {
     const analytics = getAnalytics(APP.getApp())
@@ -17,10 +18,17 @@ isOnline().then((online) => {
     // Set canvas dimensions to match window inner size
     render.width = window.innerWidth
     render.height = window.innerHeight
-
-    // Running the app (if user is connected to internet)
-    let GAME = new GameAPP(render)
-    GAME.run()
+    
+    // Get informations about the userAgent used by the player (use to load better content)
+    const parser = new UAParser()
+    const result = parser.getResult()
+    if(result.device.type !== undefined && result.device.type !== 'mobile') {
+      let GAME = new GameAPP(render)
+      GAME.run()
+    } else {
+      // Excuse page
+      window.location.href = '/unsupported-devices/'
+    }
   } else {
     // Excuse page
     window.location.href = '/offline/'

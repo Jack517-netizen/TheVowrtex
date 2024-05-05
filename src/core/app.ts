@@ -2,7 +2,6 @@ import { Engine } from '@babylonjs/core'
 import ScreenManager from './controllers/screenManager'
 import HomeScreen from './screens/homeScreen'
 import { AudioManager } from './controllers/audioManager'
-import EpisodeScreen from './screens/episodeScreen'
 
 export default class GameAPP {
   private readonly _engine: Engine
@@ -38,7 +37,7 @@ export default class GameAPP {
   private async _load(): Promise<void> {
     // Go to HomeScreen
     if (window.innerWidth > window.innerHeight)
-      this._screenManager.pushScreen(new EpisodeScreen(this)) //!!!!!
+      this._screenManager.pushScreen(new HomeScreen(this))
   }
 
   /**

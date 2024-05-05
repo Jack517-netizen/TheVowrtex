@@ -40,7 +40,7 @@ export default class SeasonScreen implements IGameScreen {
     this._app = game
     this._engine = game.getEngine
     this._scene = new Scene(this._engine)
-    this._screenId = 'SEASONS'
+    this._screenId = 'seasons'
 
     // Attach inspector debug tools
     this._debugGame()
