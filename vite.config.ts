@@ -20,9 +20,9 @@ export default defineConfig({
         'offline/index.html',
       ],
       manifest: {
-        name: 'Vortex',
-        short_name: 'Vortex',
-        description: 'The Ultimate Racing Universe',
+        name: 'Vowrtex',
+        short_name: 'Vowrtex',
+        description: 'The race of your life.',
         theme_color: '#000000',
         orientation: 'landscape',
         display: 'fullscreen',
