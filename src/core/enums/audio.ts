@@ -24,8 +24,8 @@ export enum AudioType {
    */
   MUSIC,
 
-   /**
+  /**
    * The short-song which can be play in short time
    */
-   SFX,
+  SFX,
 }

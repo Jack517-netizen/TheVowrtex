@@ -103,9 +103,13 @@ export class NavbarButton extends Button implements IButton {
     _navBtn.background = colors.red.surf
 
     // attach sound sfx
-    _navBtn.onPointerClickObservable.add(() => {
-      AudioManager.playInstantAudio('click-ui.mp3')
-    }, 0, true)
+    _navBtn.onPointerClickObservable.add(
+      () => {
+        AudioManager.playInstantAudio('click-ui.mp3')
+      },
+      0,
+      true,
+    )
 
     // attach defined action process
     _navBtn.onPointerClickObservable.add(() => {

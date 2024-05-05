@@ -46,7 +46,7 @@ export class NavBar extends StackPanel {
     let tokenBtn = this.buildTokenComponent(userManager, gui)
     let starBtn = this.buildStarComponent(userManager, gui)
     let garageBtn = this.buildGarageComponent(userManager, gui)
-    if(sid === 'garage') garageBtn.isEnabled = false
+    if (sid === 'garage') garageBtn.isEnabled = false
     let settingsBtn = this.buildSettingsComponent(userManager, gui)
     let arkkturusBtn = this.buildArkkturusBtn(gui)
 
@@ -214,11 +214,12 @@ export class NavBar extends StackPanel {
           return gui.addControl(
             GamePopup.showInfoPopup(
               'STAR\n' +
-              "Value: " + userManager.getGameUser.star + 
-              "\n\n\n" + 
-              "About: STAR is like the sum of experience you gained based on a couple of things.\n" + 
-              "Each race is based on 5 STAR: 3 STAR depends on your position at the end of race\n and the 2 latest based " + 
-              "on special things you must do during racing."
+                'Value: ' +
+                userManager.getGameUser.star +
+                '\n\n\n' +
+                'About: STAR is like the sum of experience you gained based on a couple of things.\n' +
+                'Each race is based on 5 STAR: 3 STAR depends on your position at the end of race\n and the 2 latest based ' +
+                'on special things you must do during racing.',
             ),
           )
         }
@@ -247,10 +248,11 @@ export class NavBar extends StackPanel {
           return gui.addControl(
             GamePopup.showInfoPopup(
               'TOKEN\n' +
-              "You have: " + userManager.getGameUser.token + 
-              "\n\n\n" + 
-              "About: TOKEN is like gold or diamond in our real life.\n" + 
-              "To have an idea, 1 GOLD = 10 TOKEN. It is rare but not impossible to earn.\n"
+                'You have: ' +
+                userManager.getGameUser.token +
+                '\n\n\n' +
+                'About: TOKEN is like gold or diamond in our real life.\n' +
+                'To have an idea, 1 GOLD = 10 TOKEN. It is rare but not impossible to earn.\n',
             ),
           )
         }
@@ -279,11 +281,12 @@ export class NavBar extends StackPanel {
           return gui.addControl(
             GamePopup.showInfoPopup(
               'TEX\n' +
-              "You have: " + userManager.getGameUser.tex + 
-              "\n\n\n" + 
-              "About: TEX is the well-known and popular currency used in VOWRTEX.\n" + 
-              "Nobody know if its value will change based on upcoming events which can influence our universe.\n" +
-              "To have an idea, 1 DOLLAR = 1,000 TEX. In future,\n your earning will be very useful to buy cars, sell and buy in MARKETPLACE and do a lot of things."
+                'You have: ' +
+                userManager.getGameUser.tex +
+                '\n\n\n' +
+                'About: TEX is the well-known and popular currency used in VOWRTEX.\n' +
+                'Nobody know if its value will change based on upcoming events which can influence our universe.\n' +
+                'To have an idea, 1 DOLLAR = 1,000 TEX. In future,\n your earning will be very useful to buy cars, sell and buy in MARKETPLACE and do a lot of things.',
             ),
           )
         }

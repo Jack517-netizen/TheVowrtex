@@ -1,9 +1,20 @@
-import { Color4, Engine, FreeCamera, Layer, Scene, Vector3 } from '@babylonjs/core'
+import {
+  Color3,
+  Color4,
+  CubeTexture,
+  Engine,
+  FreeCamera,
+  Layer,
+  MeshBuilder,
+  Scene,
+  StandardMaterial,
+  Vector3,
+} from '@babylonjs/core'
 import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
 import IGameScreen from '../interfaces/screen'
 import GameAPP from '../app'
-import { AdvancedDynamicTexture } from '@babylonjs/gui'
+import { AdvancedDynamicTexture, ColorPicker, Control } from '@babylonjs/gui'
 import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
 import { UserManager } from '../controllers/userManager'
@@ -54,7 +65,12 @@ export default class GarageScreen implements IGameScreen {
 
   activate(): void {
     this._scene.attachControl()
-    this._engine.onResizeObservable.add(this._resize, undefined, undefined, this)
+    this._engine.onResizeObservable.add(
+      this._resize,
+      undefined,
+      undefined,
+      this,
+    )
     this._resize()
     AudioManager.playAudio('race-phonk.ogg')
 
@@ -78,7 +94,7 @@ export default class GarageScreen implements IGameScreen {
     this._scene.dispose()
   }
 
-  private _resize() { }
+  private _resize() {}
 
   private _listener() {
     this._userManager.userStateChanged()
@@ -101,8 +117,13 @@ export default class GarageScreen implements IGameScreen {
 
     // -- this._scene SETUP... --
     this._scene.detachControl()
-    let camera = new FreeCamera('garageCamera', Vector3.Zero(), this._scene)
-    this._navBar = new NavBar(this.game, this._garageGUI, this._userManager, this._screenId)
+    this._scene.createDefaultCameraOrLight(true, true, true)
+    this._navBar = new NavBar(
+      this.game,
+      this._garageGUI,
+      this._userManager,
+      this._screenId,
+    )
 
     /**
      * TODO: ...Create GARAGE SKYBOX...
@@ -110,13 +131,27 @@ export default class GarageScreen implements IGameScreen {
      * TODO: ...Add a model of car...
      * TODO: Build garage UI (skeleton not an advanced)
      */
-    this._scene.clearColor = Color4.FromHexString(colors.orange.rainbow)
     
+    let carModel = MeshBuilder.CreateSphere('carSphere', {
+      diameter: 10,
+    })
+    let carMaterial = new StandardMaterial('carMaterial')
+    carModel.material = carMaterial
+
+
+    let carColorPicker = new ColorPicker('carColorPicker')
+    carColorPicker.onValueChangedObservable.add((color) => {
+      carMaterial.diffuseColor = color
+    })
+    carColorPicker.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
+    carColorPicker.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
+    carColorPicker.paddingLeft = '15px'
+    carColorPicker.paddingBottom = '15px'
+
     this._garageGUI.addControl(this._navBar)
     // -- this._scene FINISHED LOADING --
     await this._scene.whenReadyAsync()
     this._scene.attachControl()
     this._engine.hideLoadingUI()
   }
-
 }

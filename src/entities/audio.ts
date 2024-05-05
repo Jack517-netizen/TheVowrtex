@@ -10,7 +10,7 @@ export class GameAudio extends Sound {
       autoplay: type === AudioType.MUSIC || AudioType.SFX ? true : false,
       loop: type === AudioType.MUSIC ? true : false,
       spatialSound: type === AudioType.MUSIC || AudioType.SFX ? true : false,
-      volume:type === AudioType.MUSIC ? 0.5 : 0.9,
+      volume: type === AudioType.MUSIC ? 0.5 : 0.9,
     })
 
     // ...define sound type

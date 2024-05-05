@@ -37,7 +37,7 @@ export class GamePopup {
     _text.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
     // OK BUTTON
-    let _okBtn = GameButton.createOkButton(() =>{
+    let _okBtn = GameButton.createOkButton(() => {
       _overlay.isVisible = false
       _overlay.dispose()
       _tmp.isVisible = false
@@ -95,7 +95,7 @@ export class GamePopup {
     _text.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
     // DO IT BUTTON
-    const _actionBtn = GameButton.createOkButton(() =>{
+    const _actionBtn = GameButton.createOkButton(() => {
       actionFn()
 
       _overlay.isVisible = false
@@ -104,7 +104,7 @@ export class GamePopup {
       _tmp.dispose()
     })
 
-    const _undoBtn = GameButton.createCancelButton(() =>{
+    const _undoBtn = GameButton.createCancelButton(() => {
       _overlay.isVisible = false
       _overlay.dispose()
       _tmp.isVisible = false

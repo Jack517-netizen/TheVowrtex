@@ -2,6 +2,7 @@ import { Engine } from '@babylonjs/core'
 import ScreenManager from './controllers/screenManager'
 import HomeScreen from './screens/homeScreen'
 import { AudioManager } from './controllers/audioManager'
+import EpisodeScreen from './screens/episodeScreen'
 
 export default class GameAPP {
   private readonly _engine: Engine
@@ -36,9 +37,8 @@ export default class GameAPP {
    */
   private async _load(): Promise<void> {
     // Go to HomeScreen
-    if(window.innerWidth > window.innerHeight) this._screenManager.pushScreen(
-      new HomeScreen(this)
-    )
+    if (window.innerWidth > window.innerHeight)
+      this._screenManager.pushScreen(new EpisodeScreen(this)) //!!!!!
   }
 
   /**
@@ -80,9 +80,10 @@ export default class GameAPP {
    * @returns void
    */
   private _render(): void {
-    if(window.innerWidth < window.innerHeight) {
+    if (window.innerWidth < window.innerHeight) {
       return alert(
-        'For better and immersive experience, please use landscape orientation or rotate your device.')
+        'For better and immersive experience, please use landscape orientation or rotate your device.',
+      )
     } else {
       const _currentScreen = this._screenManager.getTopScreen
       if (_currentScreen === null) return
@@ -132,5 +133,4 @@ export default class GameAPP {
   public get getScreenManager(): ScreenManager {
     return this._screenManager
   }
-
 }

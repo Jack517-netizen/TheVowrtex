@@ -1,6 +1,7 @@
 import { Button, Control } from '@babylonjs/gui'
 import { colors } from '../../configs/colors'
 import { styles } from '../../configs/styles'
+import { AudioManager } from '../controllers/audioManager'
 
 export class GameButton extends Button {
   /**
@@ -29,8 +30,11 @@ export class GameButton extends Button {
    * @param actionFn VoidFunction
    * @returns GameButton
    */
-  public static createActionButton(txt: string, actionFn: VoidFunction): GameButton {
-    let _tmp = Button.CreateSimpleButton(txt.toString()+'Button', txt)
+  public static createActionButton(
+    txt: string,
+    actionFn: VoidFunction,
+  ): GameButton {
+    let _tmp = Button.CreateSimpleButton(txt.toString() + 'Button', txt)
     _tmp.width = '500px'
     _tmp.height = '80px'
     _tmp.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
@@ -38,8 +42,8 @@ export class GameButton extends Button {
     _tmp.paddingTop = '10px'
     _tmp.background = colors.blue.spectrum
     _tmp.color = colors.white.normal
-    if(_tmp.textBlock) _tmp.textBlock.fontSize = styles.headline4
-    if(_tmp.textBlock) _tmp.textBlock.fontWeight = '500'
+    if (_tmp.textBlock) _tmp.textBlock.fontSize = styles.headline4
+    if (_tmp.textBlock) _tmp.textBlock.fontWeight = '500'
     _tmp.onPointerClickObservable.add(() => {
       actionFn()
     })
@@ -51,14 +55,20 @@ export class GameButton extends Button {
    * @param id string
    * @param src string
    */
-  public static createDirectionnalButton(id: string, src: string, actionFn: VoidFunction): GameButton {
+  public static createDirectionnalButton(
+    id: string,
+    src: string,
+    actionFn: VoidFunction,
+  ): GameButton {
     let _tmp = Button.CreateImageOnlyButton(id, '/assets/icons/' + src)
     _tmp.width = '200px'
     _tmp.height = '200px'
     _tmp.paddingLeft = '20px'
     _tmp.paddingRight = '20px'
+    _tmp.thickness = 0
 
     _tmp.onPointerClickObservable.add(() => {
+      AudioManager.playInstantAudio('click-ui.mp3')
       actionFn()
     })
 

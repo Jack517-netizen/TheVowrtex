@@ -3,7 +3,14 @@ import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
 import IGameScreen from '../interfaces/screen'
 import GameAPP from '../app'
-import { AdvancedDynamicTexture, Button, Container, Control, Image, TextBlock } from '@babylonjs/gui'
+import {
+  AdvancedDynamicTexture,
+  Button,
+  Container,
+  Control,
+  Image,
+  TextBlock,
+} from '@babylonjs/gui'
 import { action, computed, makeObservable, observable, reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
@@ -11,24 +18,26 @@ import { UserManager } from '../controllers/userManager'
 import { GameButton } from '../components/buttons'
 import { colors } from '../../configs/colors'
 import { styles } from '../../configs/styles'
+import SeasonScreen from './seasonScreen'
+import { GameOverlay } from '../components/overlay'
 
 export default class GameModeScreen implements IGameScreen {
   private readonly _engine: Engine
   private readonly _scene: Scene
-  private readonly _game: GameAPP
+  private readonly _app: GameAPP
   _screenId: string
   private readonly _gameModeGUI: AdvancedDynamicTexture
   private readonly _userManager: UserManager
   private _navBar: NavBar
-  _index: number = 1
+  _index: number = 3
 
   constructor(readonly game: GameAPP) {
     makeObservable(this, {
       _index: observable,
       getIndex: computed,
-      _slide: action
+      _slide: action,
     })
-    this._game = game
+    this._app = game
     this._engine = game.getEngine
     this._scene = new Scene(this._engine)
     this._screenId = 'game mode'
@@ -62,7 +71,12 @@ export default class GameModeScreen implements IGameScreen {
 
   activate(): void {
     this._scene.attachControl()
-    this._engine.onResizeObservable.add(this._resize, undefined, undefined, this)
+    this._engine.onResizeObservable.add(
+      this._resize,
+      undefined,
+      undefined,
+      this,
+    )
     this._resize()
     AudioManager.playAudio('race-phonk.ogg')
 
@@ -86,7 +100,7 @@ export default class GameModeScreen implements IGameScreen {
     this._scene.dispose()
   }
 
-  private _resize() { }
+  private _resize() {}
 
   private _listener() {
     this._userManager.userStateChanged()
@@ -111,17 +125,25 @@ export default class GameModeScreen implements IGameScreen {
     this._scene.detachControl()
     let camera = new FreeCamera('modeCamera', Vector3.Zero(), this._scene)
 
-    this._navBar = new NavBar(this.game, this._gameModeGUI, this._userManager, this._screenId)
+    this._navBar = new NavBar(
+      this.game,
+      this._gameModeGUI,
+      this._userManager,
+      this._screenId,
+    )
 
     let arrowLeft = GameButton.createDirectionnalButton(
       'leftArrowBtn',
-      'left-arrow.png', () => {})
+      'left-arrow.png',
+      () => {},
+    )
     arrowLeft.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     arrowLeft.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
     let arrowRight = GameButton.createDirectionnalButton(
       'rightArrowBtn',
       'right-arrow.png',
-      () => {})
+      () => {},
+    )
     arrowRight.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     arrowRight.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
 
@@ -144,7 +166,10 @@ export default class GameModeScreen implements IGameScreen {
 
     let gameModePanel = new Container('gameModePanel')
 
-    let imageBlock = new Image('imagePart', `/assets/img/dome${this.getIndex}.jpg`)
+    let imageBlock = new Image(
+      'imagePart',
+      `/assets/img/dome${this.getIndex}.jpg`,
+    )
     imageBlock.width = '60%'
     imageBlock.height = '50%'
     imageBlock.highlightLineWidth = 15
@@ -152,44 +177,65 @@ export default class GameModeScreen implements IGameScreen {
     imageBlock.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
     imageBlock.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
     gameModePanel.addControl(imageBlock)
-    
-    let isLocked = true
 
-    if(isLocked) {
-      let lockBlock =  Button.CreateImageOnlyButton('lockBlockImg', `/assets/icons/lock.png`)
+    let isLocked = false
+
+    if (isLocked) {
+      let lockBlock = Button.CreateImageOnlyButton(
+        'lockBlockImg',
+        `/assets/icons/lock.png`,
+      )
       lockBlock.background = colors.dark.competitive
       lockBlock.alpha = 0.9
       lockBlock.width = '60%'
       lockBlock.height = '50%'
-      if(lockBlock.image) lockBlock.image.width = '100px'
-      if(lockBlock.image) lockBlock.image.height = '100px'
-      if(lockBlock.image) {
+      if (lockBlock.image) lockBlock.image.width = '100px'
+      if (lockBlock.image) lockBlock.image.height = '100px'
+      if (lockBlock.image) {
         lockBlock.image.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
-        lockBlock.image.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER  
+        lockBlock.image.horizontalAlignment =
+          Control.HORIZONTAL_ALIGNMENT_CENTER
       }
       lockBlock.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
       lockBlock.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
       gameModePanel.addControl(lockBlock)
     } else {
-      let selectBtn = GameButton.createActionButton('SELECT', () => {})
+      let selectBtn = GameButton.createActionButton('SELECT', () => {
+        switch (this._index) {
+          case 1:
+            //TODO: ...Go to CRAZY COURSE SCREEN...
+            break
+          case 2:
+            //TODO: ...Go to MEGA DESTRUCTION SCREEN...
+            break
+          case 3:
+            this._app.getScreenManager.pushScreen(new SeasonScreen(this._app))
+            break
+          default:
+            alert('UNDEFINED ACTION')
+        }
+      })
       selectBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
       selectBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
       gameModePanel.addControl(selectBtn)
     }
 
     const _backgroundLayer = new Layer(
-      'homeLayer',
-      '/assets/img/dome1.jpg',
+      'modeLayer',
+      '/assets/img/banner.jpg',
       this._scene,
       true,
     )
-   
+
     this._gameModeGUI.addControl(modeTitle)
     this._gameModeGUI.addControl(descTitle)
     this._gameModeGUI.addControl(gameModePanel)
     this._gameModeGUI.addControl(arrowLeft)
     this._gameModeGUI.addControl(arrowRight)
     this._gameModeGUI.addControl(this._navBar)
+    this._gameModeGUI.addControl(
+      GameOverlay.createTransparentBackgroundOverlay(),
+    )
 
     // -- this._scene FINISHED LOADING --
     await this._scene.whenReadyAsync()
