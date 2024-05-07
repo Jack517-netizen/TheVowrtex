@@ -202,22 +202,22 @@ export default class SeasonScreen implements IGameScreen {
       let selectBtn = GameButton.createActionButton('SELECT', () => {
         switch (this._index) {
           case 1:
-						this._app.getScreenManager.pushScreen(new EpisodeScreen(this._app))
+            this._app.getScreenManager.pushScreen(new EpisodeScreen(this._app))
             break
-					case 2:
-						break
-					case 3:
-						break
-					case 4:
-						break
-					case 5:
-						break
-					case 6:
-						break
-					case 7:
-						break
-					case 8:
-						break
+          case 2:
+            break
+          case 3:
+            break
+          case 4:
+            break
+          case 5:
+            break
+          case 6:
+            break
+          case 7:
+            break
+          case 8:
+            break
           default:
             break
         }

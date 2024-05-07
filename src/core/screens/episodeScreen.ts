@@ -6,10 +6,10 @@ import GameAPP from '../app'
 import {
   AdvancedDynamicTexture,
   Button,
-	Checkbox,
-	Container,
-	Control,
-	Grid,
+  Checkbox,
+  Container,
+  Control,
+  Grid,
   Image,
   Rectangle,
   StackPanel,
@@ -138,20 +138,20 @@ export default class EpisodeScreen implements IGameScreen {
       this._screenId,
     )
 
-		let episodesGrid = new Grid('episodesGrid')
-		episodesGrid.paddingTop = '10%'
-		episodesGrid.width = '99%'
-		episodesGrid.height = '90%'
-		
-		for (let i = 1; i <= episodes.length / 5; i++) {
-			episodesGrid.addRowDefinition(0.5)
-			for (let j = 1; j <= episodes.length / 2; j++) {
-				const element = episodes[(i*j)-1]
-				const episodeComponent = this._buildEpisodeComponent(element)
-				episodesGrid.addColumnDefinition(253, true)
-				episodesGrid.addControl(episodeComponent, i-1, j-1)
-			}
-		}
+    let episodesGrid = new Grid('episodesGrid')
+    episodesGrid.paddingTop = '10%'
+    episodesGrid.width = '99%'
+    episodesGrid.height = '90%'
+
+    for (let i = 1; i <= episodes.length / 5; i++) {
+      episodesGrid.addRowDefinition(0.5)
+      for (let j = 1; j <= episodes.length / 2; j++) {
+        const element = episodes[i * j - 1]
+        const episodeComponent = this._buildEpisodeComponent(element)
+        episodesGrid.addColumnDefinition(253, true)
+        episodesGrid.addControl(episodeComponent, i - 1, j - 1)
+      }
+    }
 
     const _backgroundLayer = new Layer(
       'episodeLayer',
@@ -160,7 +160,7 @@ export default class EpisodeScreen implements IGameScreen {
       true,
     )
 
-		this._gameEpisodeGUI.addControl(episodesGrid)
+    this._gameEpisodeGUI.addControl(episodesGrid)
     this._gameEpisodeGUI.addControl(this._navBar)
     this._gameEpisodeGUI.addControl(
       GameOverlay.createTransparentBackgroundOverlay(),
@@ -188,13 +188,22 @@ export default class EpisodeScreen implements IGameScreen {
     return this._index
   }
 
-  private _buildEpisodeComponent(element: { id: number; title: string; description: string; url: string; isLocked: boolean }) {
+  private _buildEpisodeComponent(element: {
+    id: number
+    title: string
+    description: string
+    url: string
+    isLocked: boolean
+  }) {
     const component = new Container('episode' + element.id)
     component.width = '100%'
     component.height = '99%'
     component.paddingLeft = '5px'
-  
-    let episodeTitle = new TextBlock('episodeTextBlock' + element.id, element.title)
+
+    let episodeTitle = new TextBlock(
+      'episodeTextBlock' + element.id,
+      element.title,
+    )
     episodeTitle.fontSize = styles.headline3
     episodeTitle.fontWeight = '600'
     episodeTitle.color = colors.white.normal
@@ -203,13 +212,13 @@ export default class EpisodeScreen implements IGameScreen {
     let episodeImage = new Image('episodeImage' + element.id, element.url)
     episodeImage.width = '100%'
     episodeImage.height = '100%'
-  
+
     component.addControl(episodeImage)
     component.addControl(episodeTitle)
     if (element.isLocked) {
       let lockBlock = Button.CreateImageOnlyButton(
         'lockBlockImg',
-        `/assets/icons/lock.png`
+        `/assets/icons/lock.png`,
       )
       lockBlock.background = colors.dark.competitive
       lockBlock.alpha = 0.9
@@ -230,17 +239,18 @@ export default class EpisodeScreen implements IGameScreen {
         this._loadEpisodeDetails(element.id.toString())
       })
     }
-  
+
     return component
   }
-  
+
   /**
    * Load episode details menu
    * @param id string
    * @returns void
    */
   private _loadEpisodeDetails(id: string): void {
-    this._gameEpisodeGUI.addControl(GamePopup.showMenu(new EpisodeDetailsMenu(id)))
+    this._gameEpisodeGUI.addControl(
+      GamePopup.showMenu(new EpisodeDetailsMenu(id)),
+    )
   }
-
 }

@@ -131,13 +131,12 @@ export default class GarageScreen implements IGameScreen {
      * TODO: ...Add a model of car...
      * TODO: Build garage UI (skeleton not an advanced)
      */
-    
+
     let carModel = MeshBuilder.CreateSphere('carSphere', {
       diameter: 10,
     })
     let carMaterial = new StandardMaterial('carMaterial')
     carModel.material = carMaterial
-
 
     let carColorPicker = new ColorPicker('carColorPicker')
     carColorPicker.onValueChangedObservable.add((color) => {

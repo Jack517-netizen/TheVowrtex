@@ -138,6 +138,6 @@ export default class HomeScreen implements IGameScreen {
     // --this._scene FINISHED LOADING--
     await this._scene.whenReadyAsync()
     this._scene.attachControl()
-    this._engine.hideLoadingUI()
+    // this._engine.hideLoadingUI()
   }
 }

@@ -4,13 +4,15 @@ import { registerSW } from 'virtual:pwa-register'
 import { UAParser } from 'ua-parser-js'
 import { APP } from './core/components/app.ts'
 import GameAPP from './core/app.ts'
+import Navigo from 'navigo'
 
 /**--------ENTRY POINT---- */
+const router = new Navigo('/')
 
 // Get user network state && Running the app (if user is connected to internet)
 isOnline().then((online) => {
   if (online) {
-    const analytics = getAnalytics(APP.getApp())
+    //! const analytics = getAnalytics(APP.getApp())
 
     // Get canvas element
     let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
@@ -18,20 +20,29 @@ isOnline().then((online) => {
     // Set canvas dimensions to match window inner size
     render.width = window.innerWidth
     render.height = window.innerHeight
-    
+
     // Get informations about the userAgent used by the player (use to load better content)
     const parser = new UAParser()
     const result = parser.getResult()
-    if(result.device.type !== undefined && result.device.type !== 'mobile') {
-      let GAME = new GameAPP(render)
+
+    //! DEBUG PURPOSE
+    console.log('GUA => ', result)
+    if (result.os.name === 'Windows' || result.os.name === 'Mac 0S') {
+      const loadingBar = document.querySelector('#loadingBar') as HTMLElement
+      const percentLoaded = document.querySelector(
+        '#percentLoaded',
+      ) as HTMLElement
+      const loader = document.querySelector('#loader') as HTMLElement
+
+      let GAME = new GameAPP(render, loadingBar, percentLoaded, loader)
       GAME.run()
     } else {
       // Excuse page
-      window.location.href = '/unsupported-devices/'
+      router.navigate('/unsupported-devices/')
     }
   } else {
     // Excuse page
-    window.location.href = '/offline/'
+    router.navigate('/offline/')
   }
 })
 
