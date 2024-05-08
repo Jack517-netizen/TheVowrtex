@@ -37,6 +37,7 @@
     />
     <title>Vortex. | Unsupported browsers</title>
     <meta name="description" content="The race of your life." />
+
     <style>
       body {
         font-family: 'Rubik', sans-serif;
@@ -56,14 +57,13 @@
         height: 50%;
       }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js/src/ua-parser.min.js"></script>
+    
+    <script src="//unpkg.com/navigo"></script>
     <script>
       window.addEventListener('load', () => {
-        const uap = new UAParser()
-        const result = uap.getResult()
         let infoTag = document.querySelector('#generated-content')
-        infoTag.innerHTML = `<h3>Looks like you're using <span class='highlight'>${browser.name} browser</span>` + 
-        `on <span class='highlight'>${os.name} device</span>! No worries, We are actively working on responsive design for` + 
+        infoTag.innerHTML = `<h3>Looks like you're using <span class='highlight'>browser.name browser</span>` + 
+        `on <span class='highlight'>os.name device</span>! No worries, We are actively working on responsive design for` + 
         ` mobile devices. Instead, use desktop or large screen device for moment.</h3>`
       })
     </script>

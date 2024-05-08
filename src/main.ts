@@ -5,61 +5,82 @@ import { UAParser } from 'ua-parser-js'
 import { APP } from './core/components/app.ts'
 import GameAPP from './core/app.ts'
 import Navigo from 'navigo'
+import { RouterManager } from './core/controllers/routerManager.ts'
 
-/**--------ENTRY POINT---- */
-const router = new Navigo('/')
+/**--------ENTRY POINT OF GAME---- */
+const router = RouterManager.generateRoutes()
 
-// Get user network state && Running the app (if user is connected to internet)
-isOnline().then((online) => {
-  if (online) {
-    //! const analytics = getAnalytics(APP.getApp())
+const gameCanvas = document.querySelector('#renderCanvas') as HTMLCanvasElement
+gameCanvas.width = window.innerWidth
+gameCanvas.height = window.innerHeight
 
-    // Get canvas element
-    let render = document.querySelector('#renderCanvas') as HTMLCanvasElement
+// Fetch updates and get user attention...
+const listenForUpdates = () => {
+  const updateSW = registerSW({
+    onNeedRefresh() {
+      const userConsent = confirm(
+        'New version of VORTEX available, We recommend update now.',
+      )
+      if (userConsent) {
+        updateSW()
+      } else {
+        alert(
+          "You can always update from settings > Update Vortex. Don't miss any available features!",
+        )
+      }
+    },
+    onOfflineReady() {
+      //TODO: Run code here.
+    },
+  })
+}
 
-    // Set canvas dimensions to match window inner size
-    render.width = window.innerWidth
-    render.height = window.innerHeight
+// Get informations about the userAgent used by the player (use to load better content)
+const getPlayerDeviceInfo = () => {
+  const parser = new UAParser()
+  const result = parser.getResult()
 
-    // Get informations about the userAgent used by the player (use to load better content)
-    const parser = new UAParser()
-    const result = parser.getResult()
+  //! DEBUG PURPOSE
+  console.log('GUA => ', result)
 
-    //! DEBUG PURPOSE
-    console.log('GUA => ', result)
-    if (result.os.name === 'Windows' || result.os.name === 'Mac 0S') {
-      const loadingBar = document.querySelector('#loadingBar') as HTMLElement
-      const percentLoaded = document.querySelector(
-        '#percentLoaded',
-      ) as HTMLElement
-      const loader = document.querySelector('#loader') as HTMLElement
+  if (result.os.name !== 'Android' && result.os.name !== 'iOS') {
+    const loadingBar = document.querySelector('#loadingBar') as HTMLElement
+    const percentLoaded = document.querySelector(
+      '#percentLoaded',
+    ) as HTMLElement
+    const loader = document.querySelector('#loader') as HTMLElement
 
-      let GAME = new GameAPP(render, loadingBar, percentLoaded, loader)
-      GAME.run()
-    } else {
-      // Excuse page
-      router.navigate('/unsupported-devices/')
-    }
+    let GAME = new GameAPP(gameCanvas, loadingBar, percentLoaded, loader)
+    GAME.run()
   } else {
     // Excuse page
-    router.navigate('/offline/')
-  }
-})
-
-const updateSW = registerSW({
-  onNeedRefresh() {
-    const userConsent = confirm(
-      'New version of VORTEX available, We recommend update now.',
+    return router.navigate(
+      '/unsupported-devices?browserName=' +
+        result.browser.name +
+        '&osName=' +
+        result.os.name,
     )
-    if (userConsent) {
-      updateSW()
+  }
+}
+
+// Get user network state (if user is connected ?) && Running the app
+const getPlayerConnectionState = () => {
+  isOnline().then((status) => {
+    if (status) {
+      //! const analytics = getAnalytics(APP.getApp())
+      getPlayerDeviceInfo()
     } else {
-      alert(
-        "You can always update from settings > Update Vortex. Don't miss any available features!",
-      )
+      // Excuse page
+      console.log('offline')
+      return router.navigateByName('offline-page')
     }
-  },
-  onOfflineReady() {
-    //TODO: Run code here.
-  },
-})
+  })
+}
+
+const openApplication = () => {
+  getPlayerConnectionState()
+
+  listenForUpdates()
+}
+
+openApplication()

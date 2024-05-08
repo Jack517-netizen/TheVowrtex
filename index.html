@@ -141,25 +141,24 @@
         const loader = document.querySelector('.loader')
         if (loader) loader.classList.add('loader--hidden')
         document.body.firstElementChild.remove()
+        // document.body.innerHTML += `<!-- loading section -->
+        //   <div id="loader">
+        //     <div id="loadingContainer">
+        //       <div id="loadingBar"></div>
+        //     </div>
+
+        //     <h1 id="titl">Loading...</h1>
+        //     <br/>
+            
+        //     <img src="/assets/img/spinner.gif" alt="The loading spinner">
+        //     <h2 id="percentLoaded">0%</h2>
+        //   </div>`
       })
     </script>
   </head>
   <body>
     <!-- preloader for DOMContentLoad -->
     <div class="loader"></div>
-
-    <!-- loading section -->
-    <div id="loader">
-      <div id="loadingContainer">
-        <div id="loadingBar"></div>
-      </div>
-
-      <h1 id="titl">Loading...</h1>
-      <br/>
-      
-      <img src="/assets/img/spinner.gif" alt="The loading spinner">
-      <h2 id="percentLoaded">0%</h2>
-    </div>
 
     <!-- canvas section element -->
     <canvas id="renderCanvas"></canvas>
