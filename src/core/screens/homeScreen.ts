@@ -1,41 +1,28 @@
 import { Engine, FreeCamera, Layer, Scene, Vector3 } from '@babylonjs/core'
 import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
-import IGameScreen from '../interfaces/screen'
 import GameAPP from '../app'
 import GameModeScreen from './modeScreen'
 import { AdvancedDynamicTexture } from '@babylonjs/gui'
 import { reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
-import { UserManager } from '../controllers/userManager'
 import { GamePopup } from '../components/popup'
 import { FooterBar } from '../components/foobar'
+import { Inspector } from '@babylonjs/inspector'
+import { BaseScreen } from './BaseScreen'
+import IGameScreen from '../interfaces/screen'
 
-export default class HomeScreen implements IGameScreen {
-  private readonly _engine: Engine
-  private readonly _scene: Scene
-  private readonly _game: GameAPP
-  _screenId: string
+export default class HomeScreen extends BaseScreen implements IGameScreen {
   private readonly _homeGUI: AdvancedDynamicTexture
-  private readonly _audioManager: AudioManager
-  private readonly _userManager: UserManager
-  private _navBar: NavBar
   private _backgroundLayer: Layer
 
-  constructor(readonly game: GameAPP) {
-    this._game = game
-    this._engine = game.getEngine
-    this._scene = new Scene(this._engine)
-    this._screenId = 'home'
-
-    // Attach inspector debug tools
-    this._debugGame()
-
+  constructor(private readonly _app: GameAPP) {
+    super(_app, 'home')
     this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-    this._userManager = new UserManager()
 
-    // ... build ui
+    // Attach inspector debug tools ... build UI
+    this._debugGame()
     this._build()
   }
 
@@ -48,47 +35,33 @@ export default class HomeScreen implements IGameScreen {
     window.addEventListener('keydown', (evt) => {
       if (evt.ctrlKey && evt.key === 'i') {
         if (this._scene.debugLayer.isVisible()) {
-          this._scene.debugLayer.hide()
+          Inspector.Show(this._scene, {})
         } else {
-          this._scene.debugLayer.show()
+          Inspector.Hide()
         }
       }
     })
   }
 
   activate(): void {
-    this._scene.attachControl()
-    this._engine.onResizeObservable.add(
-      this._resize,
-      undefined,
-      undefined,
-      this,
-    )
-    this._resize()
+    super.activate()
     AudioManager.playAudio('neon-fury.ogg')
-
     // ...attach all listener (understand which affect the rebuild)
     this._listener()
   }
 
   deactivate(): void {
+    super.deactivate()
     this._navBar.stop()
-    AudioManager.disposeAllSongs()
-
-    this._engine.onResizeObservable.removeCallback(this._resize, this)
-    this._scene.detachControl()
   }
 
   render(): void {
-    this._scene.render()
+    super.render()
   }
 
   dispose(): void {
-    AudioManager.disposeAllSongs()
-    this._scene.dispose()
+    super.dispose()
   }
-
-  private _resize() {}
 
   private _listener() {
     this._userManager.userStateChanged()
@@ -137,7 +110,6 @@ export default class HomeScreen implements IGameScreen {
 
     // --this._scene FINISHED LOADING--
     await this._scene.whenReadyAsync()
-    this._scene.attachControl()
-    // this._engine.hideLoadingUI()
+    this._engine.hideLoadingUI()
   }
 }

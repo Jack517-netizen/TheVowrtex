@@ -1,6 +1,6 @@
 import { Engine } from '@babylonjs/core'
-import ScreenManager from './controllers/ScreenManager'
-import HomeScreen from './screens/homeScreen'
+import ScreenManager from './controllers/screenManager'
+import HomeScreen from './screens/HomeScreen'
 import { AudioManager } from './controllers/audioManager'
 import { CustomLoadingScreen } from './screens/CustomLoadingScreen'
 
@@ -16,16 +16,10 @@ export default class GameAPP {
 
   constructor(
     private readonly canvasElement: HTMLCanvasElement,
-    private loadingBar: HTMLElement,
-    private percentLoaded: HTMLElement,
-    private loader: HTMLElement,
+    private readonly bjsLoaderContainer: HTMLElement,
   ) {
-    this._engine = new Engine(canvasElement, true)
-    this._loadingScreen = new CustomLoadingScreen(
-      this.loadingBar,
-      this.percentLoaded,
-      this.loader,
-    )
+    this._engine = new Engine(this.canvasElement, true)
+    this._loadingScreen = new CustomLoadingScreen(this.bjsLoaderContainer)
     this._engine.loadingScreen = this._loadingScreen
 
     this._load()
@@ -50,8 +44,8 @@ export default class GameAPP {
    */
   private async _load(): Promise<void> {
     // Go to HomeScreen
-    // if (window.innerWidth > window.innerHeight)
-    // this._screenManager.pushScreen(new HomeScreen(this))
+    if (window.innerWidth > window.innerHeight)
+      this._screenManager.pushScreen(new HomeScreen(this))
   }
 
   /**

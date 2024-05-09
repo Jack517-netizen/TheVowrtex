@@ -6,7 +6,8 @@ export default defineConfig({
     VitePWA({
       injectRegister: 'auto',
       workbox: {
-        maximumFileSizeToCacheInBytes: 20000000
+        //! DON'T OVERCOME THIS DEFINED SIZE
+        maximumFileSizeToCacheInBytes: 25000000,
       },
       devOptions: {
         enabled: true,
@@ -15,9 +16,10 @@ export default defineConfig({
         'favicon.ico',
         'apple-touch-icon.png',
         'maskable-icon.svg',
-        'assets/fonts/*.ttf',
-        'assets/img/*.png',
-        'offline/index.html',
+
+        '/assets/img/no-connection.png',
+        '/offline/',
+        '/unsupported-devices/',
       ],
       manifest: {
         name: 'Vowrtex',

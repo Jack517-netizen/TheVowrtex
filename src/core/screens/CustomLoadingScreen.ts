@@ -1,32 +1,26 @@
 import { ILoadingScreen } from '@babylonjs/core'
+import { RouterManager } from '../controllers/routerManager'
+import { colors } from '../../configs/colors'
 
 export class CustomLoadingScreen implements ILoadingScreen {
-  //default loader support. Optional!
+  // default loader support. Optional!
   loadingUIBackgroundColor: string
   loadingUIText: string
 
-  constructor(
-    private loadingBar: HTMLElement,
-    private percentLoaded: HTMLElement,
-    private loader: HTMLElement,
-  ) {}
+  constructor(private readonly loaderContainer: HTMLElement) {}
 
-  //What happens when loading starts
+  // What happens when loading starts
   displayLoadingUI(): void {
-    this.loadingBar.style.width = '0%'
-    this.percentLoaded.innerText = '0%'
+    this.loaderContainer.style.opacity = '1'
+    this.loaderContainer.style.visibility = 'visible'
   }
 
-  //What happens when loading stops
+  // What happens when loading stops
   hideLoadingUI(): void {
-    this.loader.id = 'loaded'
-		setTimeout(() => {
-			this.loader.style.display = 'none'
-		}, 1000);
+    this.loaderContainer.style.opacity = '0'
+    this.loaderContainer.style.visibility = 'hidden'
+    setTimeout(() => {
+      this.loaderContainer.style.display = 'none'
+    }, 1500)
   }
-
-	updateLoadStatus(status: string): void {
-		this.loadingBar.style.width = `${status}%`
-		this.percentLoaded.innerText = `${status}%`
-	}
 }

@@ -48,4 +48,15 @@ export class RouterManager {
     RouterManager.router.resolve()
     return RouterManager.router
   }
+
+  /**
+   * getCurrentLocationURL returns the current url shown in adress bar
+   * @param void
+   * @returns string
+   */
+  public static getCurrentLocationURL(): string {
+    const _tmp = RouterManager.router.getCurrentLocation()
+    console.log(_tmp)
+    return _tmp.url
+  }
 }
