@@ -6,7 +6,7 @@ import { UserManager } from '../controllers/userManager'
 import { autorun, IReactionDisposer } from 'mobx'
 import { YouMenu } from '../menus/youMenu'
 import GameAPP from '../app'
-import GarageScreen from '../screens/garageScreen'
+import GarageScreen from '../screens/GarageScreen'
 import { SettingsMenu } from '../menus/settingsMenu'
 import { ArkkturusMenu } from '../menus/arkkturusMenu'
 
@@ -321,6 +321,6 @@ export class NavBar extends StackPanel {
    * @returns void
    */
   public stop() {
-    this._stop()
+    if (this._stop !== undefined) this._stop()
   }
 }

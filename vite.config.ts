@@ -17,9 +17,9 @@ export default defineConfig({
         'apple-touch-icon.png',
         'maskable-icon.svg',
 
-        '/assets/img/no-connection.png',
-        '/offline/',
-        '/unsupported-devices/',
+        'assets/img/no-connection.png',
+        'offline/index.html',
+        'unsupported-devices/index.html',
       ],
       manifest: {
         name: 'Vowrtex',

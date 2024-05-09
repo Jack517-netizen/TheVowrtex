@@ -1,100 +1,47 @@
-import {
-  Color3,
-  Color4,
-  CubeTexture,
-  Engine,
-  FreeCamera,
-  Layer,
-  MeshBuilder,
-  Scene,
-  StandardMaterial,
-  Vector3,
-} from '@babylonjs/core'
+import { Layer, MeshBuilder, StandardMaterial } from '@babylonjs/core'
 import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
-import IGameScreen from '../interfaces/screen'
 import GameAPP from '../app'
 import { AdvancedDynamicTexture, ColorPicker, Control } from '@babylonjs/gui'
+import { reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
-import { UserManager } from '../controllers/userManager'
-import { colors } from '../../configs/colors'
-import { reaction } from 'mobx'
+import { Inspector } from '@babylonjs/inspector'
+import { BaseScreen } from './BaseScreen'
+import IGameScreen from '../interfaces/screen'
 
-export default class GarageScreen implements IGameScreen {
-  private readonly _engine: Engine
-  private readonly _scene: Scene
-  private readonly _game: GameAPP
-  _screenId: string
+export default class GarageScreen extends BaseScreen implements IGameScreen {
   private readonly _garageGUI: AdvancedDynamicTexture
-  private readonly _userManager: UserManager
+  private _backgroundLayer: Layer
   private _navBar: NavBar
 
-  constructor(readonly game: GameAPP) {
-    this._game = game
-    this._engine = game.getEngine
-    this._scene = new Scene(this._engine)
-    this._screenId = 'garage'
-
-    // Attach inspector debug tools
-    this._debugGame()
-
+  constructor(private readonly _app: GameAPP) {
+    super(_app, 'home')
     this._garageGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-    this._userManager = new UserManager()
 
-    // ... build ui
+    // ... build UI
     this._build()
   }
 
-  /**
-   * For debug purpose using inspector layer
-   * @param void
-   * @return void
-   */
-  private _debugGame(): void {
-    window.addEventListener('keydown', (evt) => {
-      if (evt.ctrlKey && evt.key === 'i') {
-        if (this._scene.debugLayer.isVisible()) {
-          this._scene.debugLayer.hide()
-        } else {
-          this._scene.debugLayer.show()
-        }
-      }
-    })
-  }
-
   activate(): void {
-    this._scene.attachControl()
-    this._engine.onResizeObservable.add(
-      this._resize,
-      undefined,
-      undefined,
-      this,
-    )
-    this._resize()
+    super.activate()
     AudioManager.playAudio('race-phonk.ogg')
-
     // ...attach all listener (understand which affect the rebuild)
     this._listener()
   }
 
   deactivate(): void {
-    AudioManager.disposeAllSongs()
-
-    this._engine.onResizeObservable.removeCallback(this._resize, this)
-    this._scene.detachControl()
+    super.deactivate()
+    this._navBar.stop()
   }
 
   render(): void {
-    this._scene.render()
+    super.render()
   }
 
   dispose(): void {
-    AudioManager.disposeAllSongs()
-    this._scene.dispose()
+    super.dispose()
   }
-
-  private _resize() {}
 
   private _listener() {
     this._userManager.userStateChanged()
@@ -119,7 +66,7 @@ export default class GarageScreen implements IGameScreen {
     this._scene.detachControl()
     this._scene.createDefaultCameraOrLight(true, true, true)
     this._navBar = new NavBar(
-      this.game,
+      this._game,
       this._garageGUI,
       this._userManager,
       this._screenId,

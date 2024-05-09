@@ -10,7 +10,6 @@ export class BaseScreen implements IGameScreen {
   protected readonly _scene: Scene
   protected readonly _game: GameAPP
   protected readonly _userManager: UserManager
-  protected _navBar: NavBar
   _screenId: string
 
   constructor(
@@ -22,6 +21,27 @@ export class BaseScreen implements IGameScreen {
     this._scene = new Scene(this._engine)
     this._screenId = sid
     this._userManager = new UserManager()
+
+    this._debugGame()
+  }
+
+  /**
+   * For debug purpose using inspector layer
+   * @param void
+   * @return void
+   */
+  private _debugGame(): void {
+    window.addEventListener('keydown', (evt) => {
+      if (evt.ctrlKey && evt.key === 'i') {
+        if (this._scene.debugLayer.isVisible()) {
+          console.log('open debug panel')
+          this._scene.debugLayer.hide()
+        } else {
+          console.log('hide debug panel')
+          this._scene.debugLayer.show()
+        }
+      }
+    })
   }
 
   activate(): void {

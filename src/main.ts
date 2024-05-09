@@ -42,7 +42,6 @@ const LAUNCH_APPLICATION = () => {
       }
     } else {
       // Excuse page
-      window.location.href = '/offline/'
       router.navigateByName('offline-page')
     }
   })

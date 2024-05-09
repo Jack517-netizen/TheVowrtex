@@ -25,7 +25,7 @@ export class RouterManager {
       '/offline': {
         as: 'offline-page',
         uses: () => {
-          // window.location.replace('/offline/')
+          window.location.replace('/offline/')
         },
       },
 
@@ -33,8 +33,12 @@ export class RouterManager {
       '/unsupported-devices': {
         as: 'unsupported-devices-page',
         uses: ({ params }) => {
-          console.log(params)
-          // window.location.replace('/unsupported-devices?browserName=')
+          window.location.replace(
+            '/unsupported-devices?browserName=' +
+              params.browserName +
+              '&osName=' +
+              params.osName,
+          )
         },
       },
     })

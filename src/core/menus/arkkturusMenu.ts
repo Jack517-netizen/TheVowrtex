@@ -17,7 +17,7 @@ export class ArkkturusMenu extends StackPanel {
     // MSG CONTENT
     let _text = new TextBlock('titleTextBlock', 'ARKKTURUS GAMES STUDIO \n')
     _text.fontSize = styles.headline4
-    _text.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+    _text.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
     _text.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
 
     this.addControl(_text)

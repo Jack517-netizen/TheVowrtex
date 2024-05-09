@@ -2,7 +2,7 @@ import { Engine, FreeCamera, Layer, Scene, Vector3 } from '@babylonjs/core'
 import '@babylonjs/core/Debug/debugLayer'
 import '@babylonjs/inspector'
 import GameAPP from '../app'
-import GameModeScreen from './modeScreen'
+import GameModeScreen from './ModeScreen'
 import { AdvancedDynamicTexture } from '@babylonjs/gui'
 import { reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
@@ -15,32 +15,14 @@ import IGameScreen from '../interfaces/screen'
 
 export default class HomeScreen extends BaseScreen implements IGameScreen {
   private readonly _homeGUI: AdvancedDynamicTexture
-  private _backgroundLayer: Layer
+  private _navBar: NavBar
 
   constructor(private readonly _app: GameAPP) {
     super(_app, 'home')
     this._homeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
-    // Attach inspector debug tools ... build UI
-    this._debugGame()
+    // ... build UI
     this._build()
-  }
-
-  /**
-   * For debug purpose using inspector layer
-   * @param void
-   * @return void
-   */
-  private _debugGame(): void {
-    window.addEventListener('keydown', (evt) => {
-      if (evt.ctrlKey && evt.key === 'i') {
-        if (this._scene.debugLayer.isVisible()) {
-          Inspector.Show(this._scene, {})
-        } else {
-          Inspector.Hide()
-        }
-      }
-    })
   }
 
   activate(): void {
@@ -99,7 +81,7 @@ export default class HomeScreen extends BaseScreen implements IGameScreen {
       }
     })
 
-    this._backgroundLayer = new Layer(
+    const _backgroundLayer = new Layer(
       'homeLayer',
       '/assets/img/banner.jpg',
       this._scene,

@@ -1,6 +1,4 @@
 import { ILoadingScreen } from '@babylonjs/core'
-import { RouterManager } from '../controllers/routerManager'
-import { colors } from '../../configs/colors'
 
 export class CustomLoadingScreen implements ILoadingScreen {
   // default loader support. Optional!

@@ -6,108 +6,60 @@ import GameAPP from '../app'
 import {
   AdvancedDynamicTexture,
   Button,
-  Checkbox,
   Container,
   Control,
   Grid,
   Image,
-  Rectangle,
-  StackPanel,
   TextBlock,
 } from '@babylonjs/gui'
 import { action, computed, makeObservable, observable, reaction } from 'mobx'
 import { NavBar } from '../components/navbar'
 import { AudioManager } from '../controllers/audioManager'
-import { UserManager } from '../controllers/userManager'
-import { GameButton } from '../components/buttons'
 import { colors } from '../../configs/colors'
 import { styles } from '../../configs/styles'
 import { GameOverlay } from '../components/overlay'
-import GarageScreen from './garageScreen'
 import { episodes } from '../../data/episodes'
 import { GamePopup } from '../components/popup'
 import { EpisodeDetailsMenu } from '../menus/episodeDetailsMenu'
+import { BaseScreen } from './BaseScreen'
 
-export default class EpisodeScreen implements IGameScreen {
-  private readonly _engine: Engine
-  private readonly _scene: Scene
-  private readonly _app: GameAPP
-  _screenId: string
+export default class EpisodeScreen extends BaseScreen implements IGameScreen {
   private readonly _gameEpisodeGUI: AdvancedDynamicTexture
-  private readonly _userManager: UserManager
   private _navBar: NavBar
   _index: number = 1
 
-  constructor(readonly game: GameAPP) {
+  constructor(private readonly _app: GameAPP) {
+    super(_app, 'game mode')
     makeObservable(this, {
       _index: observable,
       getIndex: computed,
       _slide: action,
     })
-    this._app = game
-    this._engine = game.getEngine
-    this._scene = new Scene(this._engine)
-    this._screenId = 'episodes'
-
-    // Attach inspector debug tools
-    this._debugGame()
-
     this._gameEpisodeGUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-    this._userManager = new UserManager()
 
-    // ... build ui
+    // ... build UI
     this._build()
   }
 
-  /**
-   * For debug purpose using inspector layer
-   * @param void
-   * @return void
-   */
-  private _debugGame(): void {
-    window.addEventListener('keydown', (evt) => {
-      if (evt.ctrlKey && evt.key === 'i') {
-        if (this._scene.debugLayer.isVisible()) {
-          this._scene.debugLayer.hide()
-        } else {
-          this._scene.debugLayer.show()
-        }
-      }
-    })
-  }
-
   activate(): void {
-    this._scene.attachControl()
-    this._engine.onResizeObservable.add(
-      this._resize,
-      undefined,
-      undefined,
-      this,
-    )
-    this._resize()
+    super.activate()
     AudioManager.playAudio('race-phonk.ogg')
-
     // ...attach all listener (understand which affect the rebuild)
     this._listener()
   }
 
   deactivate(): void {
-    AudioManager.disposeAllSongs()
-
-    this._engine.onResizeObservable.removeCallback(this._resize, this)
-    this._scene.detachControl()
+    super.deactivate()
+    this._navBar.stop()
   }
 
   render(): void {
-    this._scene.render()
+    super.render()
   }
 
   dispose(): void {
-    AudioManager.disposeAllSongs()
-    this._scene.dispose()
+    super.dispose()
   }
-
-  private _resize() {}
 
   private _listener() {
     this._userManager.userStateChanged()
@@ -132,7 +84,7 @@ export default class EpisodeScreen implements IGameScreen {
     this._scene.detachControl()
     let camera = new FreeCamera('episodeCamera', Vector3.Zero(), this._scene)
     this._navBar = new NavBar(
-      this.game,
+      this._game,
       this._gameEpisodeGUI,
       this._userManager,
       this._screenId,
@@ -168,7 +120,6 @@ export default class EpisodeScreen implements IGameScreen {
 
     // -- this._scene FINISHED LOADING --
     await this._scene.whenReadyAsync()
-    this._scene.attachControl()
     this._engine.hideLoadingUI()
   }
 
@@ -178,6 +129,17 @@ export default class EpisodeScreen implements IGameScreen {
    * @returns void
    */
   public _slide(_symbol: string) {}
+
+  /**
+   * Load episode details menu
+   * @param id string
+   * @returns void
+   */
+  private _loadEpisodeDetails(id: string): void {
+    this._gameEpisodeGUI.addControl(
+      GamePopup.showMenu(new EpisodeDetailsMenu(id)),
+    )
+  }
 
   /**
    * Return the current slide index
@@ -241,16 +203,5 @@ export default class EpisodeScreen implements IGameScreen {
     }
 
     return component
-  }
-
-  /**
-   * Load episode details menu
-   * @param id string
-   * @returns void
-   */
-  private _loadEpisodeDetails(id: string): void {
-    this._gameEpisodeGUI.addControl(
-      GamePopup.showMenu(new EpisodeDetailsMenu(id)),
-    )
   }
 }
