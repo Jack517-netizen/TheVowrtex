@@ -22,8 +22,8 @@ export default defineConfig({
         'unsupported-devices/index.html',
       ],
       manifest: {
-        name: 'Vowrtex',
-        short_name: 'Vowrtex',
+        name: 'Vowrtex (Alpha)',
+        short_name: 'Vowrtex (Alpha)',
         description: 'The race of your life.',
         theme_color: '#000000',
         orientation: 'landscape',

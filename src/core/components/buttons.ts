@@ -39,8 +39,9 @@ export class GameButton extends Button {
     _tmp.height = '80px'
     _tmp.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
     _tmp.paddingRight = '10px'
+    _tmp.paddingBottom = '10px'
     _tmp.paddingTop = '10px'
-    _tmp.background = colors.blue.spectrum
+    _tmp.background = colors.dark.overlay
     _tmp.color = colors.white.normal
     if (_tmp.textBlock) _tmp.textBlock.fontSize = styles.headline4
     if (_tmp.textBlock) _tmp.textBlock.fontWeight = '500'
