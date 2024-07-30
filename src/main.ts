@@ -24,7 +24,7 @@ const LAUNCH_APPLICATION = () => {
       if (result.os.name !== 'Android' && result.os.name !== 'iOS') {
         const gameCanvas = document.querySelector(
           '#renderCanvas',
-        ) as HTMLCanvasElement
+        ) as unknown as HTMLCanvasElement
         const bjsLoader = document.querySelector('#bjs-loader') as HTMLElement
         gameCanvas.width = window.innerWidth
         gameCanvas.height = window.innerHeight
